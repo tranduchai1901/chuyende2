@@ -29,7 +29,8 @@ async function initDb() {
       username TEXT UNIQUE NOT NULL,
       password TEXT NOT NULL,
       fullName TEXT NOT NULL,
-      grade INTEGER NOT NULL
+      grade INTEGER NOT NULL,
+      role TEXT NOT NULL DEFAULT 'user'
     );
 
     CREATE TABLE IF NOT EXISTS grades (
@@ -86,6 +87,12 @@ async function initDb() {
       FOREIGN KEY (quizId) REFERENCES quizzes(id)
     );
   `);
+
+  try {
+    await db.exec(`ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'user'`);
+  } catch (_) {
+    /* column exists */
+  }
 
   const row = await db.get("SELECT COUNT(*) AS count FROM users");
   if (row.count === 0) {
@@ -215,10 +222,11 @@ async function migrateLegacyVietnamese(db) {
 }
 
 async function seedDb(db) {
-  await db.run(`INSERT INTO users (username,password,fullName,grade) VALUES
-    ('student1','123456','Nguyễn Văn A',10),
-    ('student2','123456','Trần Thị B',12),
-    ('student3','123456','Lê Minh C',9)`);
+  await db.run(`INSERT INTO users (username,password,fullName,grade,role) VALUES
+    ('admin','admin123','Quản trị viên',12,'admin'),
+    ('student1','123456','Nguyễn Văn A',10,'user'),
+    ('student2','123456','Trần Thị B',12,'user'),
+    ('student3','123456','Lê Minh C',9,'user')`);
 
   for (let i = 1; i <= 12; i++) {
     await db.run("INSERT INTO grades (id,name) VALUES (?,?)", [i, `Lớp ${i}`]);
@@ -285,6 +293,28 @@ export async function createApp() {
   app.use(cors());
   app.use(express.json());
 
+  app.use(async (req, res, next) => {
+    const uid = req.headers["x-user-id"];
+    if (!uid) {
+      req.authUser = null;
+      return next();
+    }
+    const id = Number(uid);
+    if (Number.isNaN(id)) {
+      req.authUser = null;
+      return next();
+    }
+    const user = await db.get("SELECT id, username, fullName, grade, role FROM users WHERE id = ?", [id]);
+    req.authUser = user ?? null;
+    next();
+  });
+
+  const requireAdmin = (req, res, next) => {
+    if (!req.authUser) return res.status(401).json({ message: "Cần đăng nhập (header x-user-id)." });
+    if (req.authUser.role !== "admin") return res.status(403).json({ message: "Chỉ quản trị viên." });
+    next();
+  };
+
   app.get("/api/health", (_, res) => {
     res.json({ ok: true, engine: "sqlite", message: "Quiz backend with SQLite is running" });
   });
@@ -292,7 +322,7 @@ export async function createApp() {
   app.post("/api/auth/login", async (req, res) => {
     const { username, password } = req.body ?? {};
     const user = await db.get(
-      "SELECT id, username, fullName, grade FROM users WHERE username = ? AND password = ?",
+      "SELECT id, username, fullName, grade, role FROM users WHERE username = ? AND password = ?",
       [username, password]
     );
     if (!user) return res.status(401).json({ message: "Thông tin đăng nhập không đúng." });
@@ -470,6 +500,38 @@ export async function createApp() {
     const { userId, quizId } = req.body ?? {};
     if (!userId || !quizId) return res.status(400).json({ message: "Dữ liệu không hợp lệ." });
     await db.run("DELETE FROM favorite_quizzes WHERE userId = ? AND quizId = ?", [userId, quizId]);
+    res.json({ ok: true });
+  });
+
+  app.get("/api/admin/overview", requireAdmin, async (_, res) => {
+    const u = await db.get("SELECT COUNT(*) AS c FROM users");
+    const q = await db.get("SELECT COUNT(*) AS c FROM quizzes");
+    const a = await db.get("SELECT COUNT(*) AS c FROM attempts");
+    const qs = await db.get("SELECT COUNT(*) AS c FROM questions");
+    res.json({ users: u.c, quizzes: q.c, attempts: a.c, questions: qs.c });
+  });
+
+  app.get("/api/admin/users", requireAdmin, async (_, res) => {
+    res.json(await db.all("SELECT id, username, fullName, grade, role FROM users ORDER BY id"));
+  });
+
+  app.get("/api/admin/quizzes", requireAdmin, async (req, res) => {
+    const limit = Math.min(Number(req.query.limit) || 50, 200);
+    const offset = Number(req.query.offset) || 0;
+    const rows = await db.all(
+      `SELECT q.*, COUNT(qq.id) AS questionCount
+       FROM quizzes q
+       LEFT JOIN questions qq ON qq.quizId = q.id
+       GROUP BY q.id
+       ORDER BY q.id DESC
+       LIMIT ? OFFSET ?`,
+      [limit, offset]
+    );
+    res.json(rows);
+  });
+
+  app.delete("/api/admin/quizzes/:id", requireAdmin, async (req, res) => {
+    await db.run("DELETE FROM quizzes WHERE id = ?", [Number(req.params.id)]);
     res.json({ ok: true });
   });
 
