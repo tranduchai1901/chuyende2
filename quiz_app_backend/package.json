@@ -6,12 +6,15 @@
   "type": "module",
   "scripts": {
     "start": "node server_sqlite.js",
+    "start:mysql": "node server_mysql.js",
     "dev": "node server_sqlite.js",
-    "test": "node tests/run-tests.js"
+    "seed": "node scripts/seed_mysql.js",
+    "test": "node --test tests/unit/scoring.test.js && node tests/run-tests.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.2",
+    "mysql2": "^3.11.5",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7"
   }
