@@ -1,0 +1,1264 @@
+TAI LIEU HUAN LUYEN AI HOC TAP
+Phien ban: 1.0
+Ngon ngu: Tieng Viet
+Muc tieu: Cung cap nen kien thuc co ban va nang cao cho AI tro giang hoc sinh trung hoc.
+
+============================================================
+PHAN 1. TOAN HOC
+============================================================
+
+1.1. CAC TAP HOP SO VA CAC TINH CHAT CO BAN
+
+Trong toan hoc pho thong, he thong so duoc xay dung theo trinh tu rong dan:
+- Tap hop so tu nhien N = {0, 1, 2, 3, ...}
+- Tap hop so nguyen Z = {..., -2, -1, 0, 1, 2, ...}
+- Tap hop so huu ti Q gom cac so viet duoc duoi dang a/b, voi b khac 0.
+- Tap hop so vo ti I gom cac so khong viet duoc duoi dang phan so, vi du sqrt(2), pi.
+- Tap hop so thuc R = Q hop I.
+
+Tinh chat giao hoan:
+a + b = b + a
+a * b = b * a
+
+Tinh chat ket hop:
+(a + b) + c = a + (b + c)
+(a * b) * c = a * (b * c)
+
+Tinh chat phan phoi:
+a * (b + c) = a * b + a * c
+
+Gia tri tuyet doi:
+|x| = x neu x >= 0
+|x| = -x neu x < 0
+
+Bat dang thuc co ban:
+binh phuong cua moi so thuc deu khong am: x^2 >= 0
+bat dang thuc Cauchy cho hai so: (a - b)^2 >= 0 => a^2 + b^2 >= 2ab
+
+1.2. PHUONG TRINH BAC NHAT MOT AN
+
+Dang tong quat:
+ax + b = 0, voi a khac 0
+
+Nghiem:
+x = -b/a
+
+Vi du:
+2x - 6 = 0 => x = 3
+
+Phuong trinh bac nhat hai an:
+ax + by = c
+Nghiem la cap (x, y) thoa man phuong trinh.
+
+He hai phuong trinh bac nhat hai an:
+a1x + b1y = c1
+a2x + b2y = c2
+
+Co the giai bang:
+- Phuong phap the
+- Phuong phap cong dai so
+- Phuong phap ma tran (nang cao)
+
+1.3. PHUONG TRINH BAC HAI
+
+Dang tong quat:
+ax^2 + bx + c = 0, a khac 0
+
+Cong thuc delta:
+Delta = b^2 - 4ac
+
+Neu Delta < 0: vo nghiem trong R
+Neu Delta = 0: nghiem kep x = -b/(2a)
+Neu Delta > 0: hai nghiem phan biet:
+x1 = (-b + sqrt(Delta)) / (2a)
+x2 = (-b - sqrt(Delta)) / (2a)
+
+He thuc Viet:
+neu x1, x2 la nghiem cua phuong trinh bac hai thi:
+x1 + x2 = -b/a
+x1 * x2 = c/a
+
+1.4. HAM SO VA DO THI
+
+Ham so la quy tac ung moi gia tri x thuoc tap xac dinh vao mot gia tri y duy nhat.
+
+Ham bac nhat:
+y = ax + b
+Do thi la duong thang.
+Do doc la a.
+Neu a > 0 ham dong bien.
+Neu a < 0 ham nghich bien.
+
+Ham bac hai:
+y = ax^2 + bx + c, a khac 0
+Do thi la parabol.
+Truc doi xung: x = -b/(2a)
+Toa do dinh:
+I(-b/(2a), -Delta/(4a))
+
+Ham mu:
+y = a^x, a > 0, a khac 1
+Neu a > 1 ham dong bien.
+Neu 0 < a < 1 ham nghich bien.
+
+Ham logarit:
+y = log_a(x), a > 0, a khac 1, x > 0
+
+Cong thuc logarit:
+log_a(xy) = log_a(x) + log_a(y)
+log_a(x/y) = log_a(x) - log_a(y)
+log_a(x^k) = k*log_a(x)
+doi co so:
+log_a(b) = ln(b)/ln(a)
+
+1.5. DAO HAM VA UNG DUNG
+
+Dinh nghia:
+f'(x0) = lim_{h->0} [f(x0 + h) - f(x0)] / h
+
+Dao ham co ban:
+(c)' = 0
+(x^n)' = n*x^(n-1)
+(sin x)' = cos x
+(cos x)' = -sin x
+(e^x)' = e^x
+(ln x)' = 1/x
+
+Quy tac:
+(u+v)' = u' + v'
+(u*v)' = u'v + uv'
+(u/v)' = (u'v - uv')/v^2
+
+Ung dung:
+- Xet tinh dong bien nghich bien
+- Tim cuc tri
+- Tim GTLN GTNN
+- Viet phuong trinh tiep tuyen
+
+1.6. HINH HOC PHANG
+
+Tam giac:
+Tong ba goc trong tam giac bang 180 do.
+
+Dinh ly Pytago:
+Trong tam giac vuong:
+a^2 + b^2 = c^2
+voi c la canh huyen.
+
+Dien tich tam giac:
+S = 1/2 * a * h
+S = 1/2 * ab * sin(C)
+S = sqrt(p(p-a)(p-b)(p-c)) (cong thuc Heron)
+
+Duong tron:
+Chu vi C = 2*pi*R
+Dien tich S = pi*R^2
+
+Cung va day:
+Goc noi tiep chan cung bang nua so do cung.
+Duong kinh chan goc noi tiep 90 do.
+
+1.7. HINH HOC KHONG GIAN
+
+The tich hinh hop chu nhat:
+V = a*b*c
+
+The tich hinh tru:
+V = pi*R^2*h
+
+The tich hinh non:
+V = (1/3)*pi*R^2*h
+
+The tich hinh cau:
+V = (4/3)*pi*R^3
+
+Dien tich mat cau:
+S = 4*pi*R^2
+
+1.8. XAC SUAT THONG KE
+
+Xac suat co dien:
+P(A) = so ket qua thuan loi / tong so ket qua dong kha nang
+
+Cong thuc cong:
+P(A hop B) = P(A) + P(B) - P(A giao B)
+
+Cong thuc nhan:
+P(A giao B) = P(A)*P(B|A)
+
+Bien co doc lap:
+P(A giao B) = P(A)*P(B)
+
+Ky vong:
+E(X) = tong x_i * p_i
+
+Phuong sai:
+Var(X) = E(X^2) - [E(X)]^2
+
+============================================================
+PHAN 2. VAT LY
+============================================================
+
+2.1. DONG HOC CHAT DIEM
+
+Van toc trung binh:
+v_tb = quang duong / thoi gian
+
+Chuyen dong thang deu:
+x = x0 + v*t
+
+Chuyen dong thang bien doi deu:
+v = v0 + a*t
+x = x0 + v0*t + 1/2*a*t^2
+v^2 - v0^2 = 2*a*(x - x0)
+
+Roi tu do:
+a = g ~ 9.8 m/s^2
+
+2.2. DONG LUC HOC
+
+Dinh luat I Newton:
+Neu hop luc bang 0, vat dung yen hoac chuyen dong thang deu.
+
+Dinh luat II Newton:
+F = m*a
+
+Dinh luat III Newton:
+Luc va phan luc cung do lon, cung gia, nguoc chieu, dat vao hai vat khac nhau.
+
+Luc ma sat truot:
+F_ms = mu*N
+
+Luc dan hoi:
+F = k*Delta_l
+
+2.3. CONG VA NANG LUONG
+
+Cong co hoc:
+A = F*s*cos(alpha)
+
+Dong nang:
+W_d = 1/2 * m * v^2
+
+The nang trong truong:
+W_t = m*g*h
+
+Co nang:
+W = W_d + W_t
+
+Dinh luat bao toan co nang (bo qua ma sat):
+W1 = W2
+
+Cong suat:
+P = A/t
+
+Hieu suat:
+H = A_ich / A_toan_phan
+
+2.4. DONG LUONG VA VA CHAM
+
+Dong luong:
+p = m*v
+
+Xung luong:
+F*Delta_t = Delta_p
+
+Bao toan dong luong:
+Tong p truoc = Tong p sau (he kin)
+
+Va cham mem:
+sau va cham hai vat chuyen dong cung van toc.
+
+2.5. DAO DONG CO
+
+Dao dong dieu hoa:
+x = A*cos(omega*t + phi)
+
+Van toc:
+v = -A*omega*sin(omega*t + phi)
+
+Gia toc:
+a = -omega^2*x
+
+Chu ky:
+T = 2*pi/omega
+
+Tan so:
+f = 1/T
+
+Con lac lo xo:
+T = 2*pi*sqrt(m/k)
+
+Con lac don:
+T = 2*pi*sqrt(l/g) (goc lech nho)
+
+2.6. SONG CO
+
+Phuong trinh song:
+u = A*cos(omega*t - kx + phi)
+
+Van toc truyen song:
+v = lambda*f
+
+Giao thoa:
+Hai song ket hop tao cuc dai va cuc tieu.
+
+Dieu kien cuc dai:
+Delta_d = k*lambda
+
+Dieu kien cuc tieu:
+Delta_d = (k + 1/2)*lambda
+
+2.7. DIEN HOC
+
+Dinh luat Coulomb:
+F = k*|q1*q2|/r^2
+
+Cuong do dien truong:
+E = F/q
+
+Hieu dien the:
+U = A/q
+
+Dinh luat Ohm:
+I = U/R
+
+Cong suat dien:
+P = U*I = I^2*R = U^2/R
+
+Dinh luat Jun-Lenxo:
+Q = I^2*R*t
+
+2.8. TU HOC CAM UNG DIEN TU
+
+Luc tu tac dung len day dan co dong dien:
+F = B*I*l*sin(alpha)
+
+Tu thong:
+Phi = B*S*cos(alpha)
+
+Suat dien dong cam ung:
+e = -dPhi/dt
+
+2.9. QUANG HOC
+
+Dinh luat phan xa:
+goc toi bang goc phan xa.
+
+Khuc xa:
+n1*sin(i) = n2*sin(r)
+
+Thau kinh:
+1/f = 1/d + 1/d'
+
+So boi giac:
+k = -d'/d
+
+2.10. VAT LY HAT NHAN
+
+Do hut khoi:
+Delta_m = Z*m_p + (A-Z)*m_n - m_hat_nhan
+
+Nang luong lien ket:
+E_lk = Delta_m*c^2
+
+Phan xa:
+N = N0*2^(-t/T)
+
+============================================================
+PHAN 3. HOA HOC
+============================================================
+
+3.1. CAU TAO NGUYEN TU
+
+Nguyen tu gom hat nhan va vo electron.
+Hat nhan gom proton va notron.
+So hieu nguyen tu Z = so proton.
+So khoi A = Z + N.
+
+Dong vi:
+cung Z, khac N.
+
+3.2. BANG TUAN HOAN
+
+Chu ky: so lop electron.
+Nhom A: so electron hoa tri.
+
+Tinh chat bien doi:
+- Ban kinh nguyen tu giam dan theo chu ky.
+- Do am dien tang dan theo chu ky.
+- Tinh kim loai giam dan theo chu ky.
+
+3.3. LIEN KET HOA HOC
+
+Lien ket ion:
+hinh thanh do su cho nhan electron, tao ion trai dau hut nhau.
+
+Lien ket cong hoa tri:
+do dung chung cap electron.
+
+Lien ket hidro:
+tuong tac yeu giua H lien ket voi F, O, N va cap e tu do.
+
+3.4. PHAN UNG OXI HOA KHU
+
+So oxi hoa:
+la dien tich gia dinh cua nguyen tu trong hop chat.
+
+Chat oxi hoa:
+nhan electron.
+
+Chat khu:
+nhuong electron.
+
+Can bang oxi hoa khu:
+co the dung phuong phap thang bang electron.
+
+3.5. DUNG DICH VA NONG DO
+
+Nong do mol:
+C_M = n/V
+
+Nong do phan tram:
+C% = (m_chat_tan/m_dung_dich)*100%
+
+Do tan:
+so gam chat tan toi da trong 100 gam dung moi o nhiet do xac dinh.
+
+3.6. AXIT BAZO MUOI
+
+Theo Arrhenius:
+Axit cho H+ trong nuoc.
+Bazo cho OH- trong nuoc.
+
+Theo Bronsted:
+Axit la chat cho proton.
+Bazo la chat nhan proton.
+
+pH:
+pH = -log[H+]
+
+Dung dich trung tinh:
+pH = 7
+Axit: pH < 7
+Bazo: pH > 7
+
+3.7. KIM LOAI
+
+Tinh chat hoa hoc chung:
+- Tac dung voi phi kim
+- Tac dung voi dung dich axit
+- Tac dung voi dung dich muoi
+
+Day dien hoa kim loai:
+K, Na, Ca, Mg, Al, Zn, Fe, Ni, Sn, Pb, (H), Cu, Hg, Ag, Pt, Au
+
+Kim loai dung truoc day duoc kim loai dung sau ra khoi dung dich muoi.
+
+3.8. PHI KIM VA HOP CHAT QUAN TRONG
+
+Oxy:
+duy tri su chay va su ho hap.
+
+Luu huynh:
+co nhieu dang thung hinh.
+
+Clo:
+tinh oxi hoa manh.
+
+Hop chat quan trong:
+H2SO4, HNO3, HCl, NaOH, Ca(OH)2, NaCl, CaCO3.
+
+3.9. HOA HOC HUU CO
+
+Hidro cacbon:
+- Ankan: CnH2n+2
+- Anken: CnH2n
+- Ankin: CnH2n-2
+
+Ancol:
+chua nhom -OH lien ket voi C no.
+
+Axit cacboxylic:
+chua nhom -COOH.
+
+Este:
+RCOOR'
+
+Phan ung xa phong hoa:
+Este + NaOH -> Muoi + Ancol
+
+3.10. HOA HOC VA DOI SONG
+
+Phan bon hoa hoc:
+dam (N), lan (P), kali (K).
+
+Vat lieu polyme:
+PE, PP, PVC, PET.
+
+An toan hoa chat:
+- Doc ky nhan canh bao.
+- Khong tron hoa chat tuy y.
+- Su dung bao ho lao dong.
+
+============================================================
+PHAN 4. VAN NGHI LUAN XA HOI
+============================================================
+
+4.1. NHAN DIEN DE NGHI LUAN XA HOI
+
+Nghi luan xa hoi thuong yeu cau ban ve:
+- mot tu tuong dao ly
+- mot hien tuong doi song
+- mot van de duoc dat ra trong doan trich
+
+Khi gap de, can:
+1) Xac dinh van de trung tam.
+2) Xac dinh thao tac lap luan chu dao.
+3) Lap dan y ro rang.
+
+4.2. BO CUC BAI VAN NGHI LUAN
+
+Mo bai:
+- Gioi thieu van de.
+- Dan dat tu nhien, ngan gon.
+
+Than bai:
+- Giai thich khai niem.
+- Phan tich bieu hien.
+- Ban luan dung sai.
+- Chung minh bang dan chung thuc te.
+- Mo rong van de va lien he ban than.
+
+Ket bai:
+- Khang dinh lai y nghia van de.
+- Dua ra thong diep hanh dong.
+
+4.3. KY NANG LAP LUAN
+
+Giai thich:
+lam ro khai niem, noi dung.
+
+Phan tich:
+chia nho van de de xem xet tung mat.
+
+Chung minh:
+dua dan chung cu the, xac thuc.
+
+Binh luan:
+dua nhan xet, danh gia.
+
+So sanh:
+dat hai doi tuong canh nhau de lam noi bat dac diem.
+
+Bac bo:
+phan bien quan diem sai lech.
+
+4.4. DAN CHUNG TRONG NGHI LUAN
+
+Dan chung can:
+- Tieu bieu
+- Chinh xac
+- Co nguon goc ro
+- Phu hop van de
+
+Khong nen:
+- Dan chung mo ho
+- Dan chung qua cu ky khong con suc thuyet phuc
+- Dan chung khong lien quan
+
+4.5. CAC CHU DE THUONG GAP
+
+Long nhan ai.
+Tinh tu hoc.
+Trach nhiem cong dan.
+Y chi vuot kho.
+Van hoa ung xu tren mang.
+Bao ve moi truong.
+Bao ton ban sac van hoa.
+
+4.6. MAU DOAN VAN NGAN THAM KHAO
+
+Chu de: Tinh tu hoc
+"Tu hoc la nang luc cot loi cua con nguoi hien dai. Khi tu hoc, ta khong chi tiep nhan tri thuc ma con hinh thanh tu duy doc lap. Trong boi canh khoa hoc cong nghe thay doi tung ngay, nhung kien thuc hoc tren lop khong the du dap ung moi tinh huong thuc te. Vi vay, moi hoc sinh can chu dong doc sach, tim tai lieu, dat cau hoi va tu kiem chung thong tin. Tu hoc ben bi se giup con nguoi nang cao nang luc nghe nghiep, mo rong tam nhin va tu tin truoc cac thach thuc cua cuoc song."
+
+============================================================
+PHAN 5. TAC PHAM VAN HOC VA GOI Y PHAN TICH
+============================================================
+
+5.1. TRUYEN KIEU - NGUYEN DU
+
+Gia tri hien thuc:
+phan anh xa hoi phong kien bat cong, doi song con nguoi bi dong tien va quyen luc chi phoi.
+
+Gia tri nhan dao:
+thuong cam cho than phan con nguoi, de cao tai nang, khat vong tinh yeu va cong ly.
+
+Nghe thuat:
+- Ngon ngu luc bat tinh luyen
+- But phap ta canh ngu tinh
+- Nghe thuat xay dung nhan vat tinh te
+
+Y can ghi:
+Nguyen Du co "tam long nhan dao lon", dat con nguoi lam trung tam.
+
+5.2. CHUYEN NGUOI CON GAI NAM XUONG - NGUYEN DU
+
+Noi dung:
+bi kich cua Vu Nuong, nguoi phu nu duc hanh, chung thuy nhung bi nghi oan.
+
+Gia tri:
+- To cao xa hoi phong kien gay oan khuất cho phu nu.
+- Ca ngoi pham chat tot dep cua nguoi phu nu Viet Nam.
+
+Nghe thuat:
+ket hop yeu to truyen ky va hien thuc doi song.
+
+5.3. CHI PHEO - NAM CAO
+
+Chu de:
+bi kich tha hoa va quyen lam nguoi cua nguoi nong dan trong xa hoi cu.
+
+Nhan vat Chi Pheo:
+tu anh canh dien lanh luong tro thanh "con quy du cua lang Vu Dai".
+nhung sau cung van co khao khat duoc lam nguoi luong thien.
+
+Gia tri nhan dao:
+Nam Cao kham pha ban chat con nguoi du bi dap vuoi van con tia sang luong thien.
+
+5.4. VO NHAT - KIM LAN
+
+Boi canh:
+nan doi 1945.
+
+Gia tri:
+- To cao toi ac che do thuc dan phong kien.
+- Ca ngoi tinh nguoi trong canh cung cuc.
+
+Nhan vat ba cu Tu:
+la bieu tuong cua tam long bao dung va niem tin vao tuong lai.
+
+5.5. LANG - KIM LAN
+
+Chu de:
+tinh yeu lang gan voi tinh yeu nuoc trong khang chien.
+
+Nhan vat ong Hai:
+co noi tam phuc tap, yeu lang tha thiet nhung khi dat loi ich dat nuoc len tren het.
+
+5.6. NHUNG NGOI SAO XA XOI - LE MINH KHUE
+
+Noi dung:
+ca ngoi ve dep tam hon va long dung cam cua nu thanh nien xung phong.
+
+Nghe thuat:
+ke chuyen theo ngoi thu nhat, mo ta tam ly tinh te.
+
+5.7. AI DA DAT TEN CHO DONG SONG - HOANG PHU NGOC TUONG
+
+The loai:
+but ky.
+
+Noi dung:
+ve dep dong song Huong nhin tu nhieu goc do van hoa, lich su, dia ly.
+
+Dac sac nghe thuat:
+van phong tai hoa, giau chat tho.
+
+5.8. TAY TIEN - QUANG DUNG
+
+Noi dung:
+khat hoa hinh tuong nguoi linh Tay Tien hao hung va hao hoa.
+
+Noi bat:
+"Tay Tien doan binh khong moc toc..."
+the hien tinh than bien cuong, bat chap gian kho.
+
+5.9. VIET BAC - TO HUU
+
+Noi dung:
+khuc hat an tinh cach mang, nguoi can bo va dong bao Viet Bac.
+
+Nghe thuat:
+giong dieu tam tinh ngan ngot, ket cau doi dap.
+
+5.10. SONG - XUAN QUYNH
+
+Chu de:
+khat vong tinh yeu chan thanh, manh liet cua nguoi phu nu hien dai.
+
+Tinh nghe thuat:
+hinh tuong song va em song hanh, giau tinh bieu tuong.
+
+============================================================
+PHAN 6. BO SUNG MAU LOI GIAI CHI TIET
+============================================================
+
+6.1. MAU GIAI TOAN PHUONG TRINH
+
+De:
+Giai phuong trinh: 3x - 7 = 11
+
+Loi giai:
+Buoc 1: Chuyen ve phai:
+3x = 11 + 7 = 18
+Buoc 2: Chia hai ve cho 3:
+x = 18/3 = 6
+Ket luan: x = 6
+
+6.2. MAU GIAI VAT LY
+
+De:
+Mot vat co khoi luong 2 kg chuyen dong nhanh dan deu voi gia toc 3 m/s^2.
+Tinh luc tac dung len vat.
+
+Loi giai:
+Ap dung dinh luat II Newton:
+F = m*a = 2*3 = 6 N
+Ket luan: luc tac dung la 6 N.
+
+6.3. MAU GIAI HOA HOC
+
+De:
+Tinh khoi luong NaOH can de pha 500 ml dung dich NaOH 1M.
+
+Loi giai:
+V = 500 ml = 0.5 l
+So mol can:
+n = C_M * V = 1 * 0.5 = 0.5 mol
+M(NaOH) = 40 g/mol
+Khoi luong:
+m = n*M = 0.5 * 40 = 20 g
+Ket luan: can 20 gam NaOH.
+
+6.4. MAU DOAN NGHI LUAN XA HOI
+
+De:
+Viet doan van khoang 200 chu ve y nghia cua long biet on.
+
+Doan tham khao:
+"Long biet on la mot gia tri dao duc dep, giup con nguoi song nhan hau va co trach nhiem hon. Biet on truoc het la ghi nho cong lao cua cha me, thay co va nhung nguoi da giup do minh trong cuoc song. Nguoi biet on thuong biet tran trong hien tai, khong vo tam truoc su hi sinh cua nguoi khac. Trong nha truong, long biet on duoc the hien qua thai do le phep, cham hoc va no luc ren luyen de khong phu su ky vong. Trong xa hoi, long biet on con la y thuc den dap, san sang chia se voi cong dong. Khi moi nguoi deu biet on, cac moi quan he se tro nen gan bo, ben vung, xa hoi them nhan van va tot dep."
+
+============================================================
+PHAN 7. GOI Y CHO AI KHI TRA LOI HOC SINH
+============================================================
+
+Huong dan 1:
+Tra loi ngan gon truoc, sau do hoi hoc sinh co muon "giai chi tiet tung buoc" khong.
+
+Huong dan 2:
+Neu bai toan co du lieu, uu tien dat cong thuc tong quat, thay so, tinh toan ro tung dong.
+
+Huong dan 3:
+Neu hoc sinh yeu cau phan tich van hoc, can:
+- neu hoan canh sang tac
+- tom tat noi dung
+- phan tich nghe thuat
+- danh gia y nghia
+
+Huong dan 4:
+Neu hoc sinh hoi bai thuc hanh hoa hoc, luon nhac ve an toan thi nghiem.
+
+Huong dan 5:
+Neu hoc sinh mat goc kien thuc, AI can de xuat "lo trinh 7 ngay on tap".
+
+============================================================
+PHAN 8. NOI DUNG DOC MO RONG DE TANG DO DAI TAI LIEU
+============================================================
+
+Doan mo rong 1:
+Hoc tap hieu qua can su ket hop giua tu duy he thong va ky luat ca nhan. Trong moi mon hoc, hoc sinh nen xay dung "ban do kien thuc" gom cac khai niem cot loi, dinh ly, cong thuc, quy tac va dang bai tap tieu bieu. Khi gap mot bai moi, thay vi hoc thuoc loi giai mau, can truy vet xem bai thuoc nhom kien thuc nao, su dung nguyen ly gi, va vi sao cach giai do hop ly. Qua trinh dat cau hoi "vi sao" se giup nao bo tao ket noi sau, tu do nho lau va van dung linh hoat hon.
+
+Doan mo rong 2:
+Trong toan hoc, sai lam pho bien cua hoc sinh la nham lan giua ky thuat bien doi va dieu kien xac dinh. Vi du, khi giai phuong trinh chua can bac hai, dieu kien de bieu thuc trong can khong am la bat buoc phai dat truoc. Neu bo qua buoc nay, hoc sinh co the tim duoc nghiem "ao". Vi vay, moi loi giai can tuan thu thu tu: dat dieu kien, bien doi tuong duong, tim nghiem, doi chieu dieu kien, ket luan.
+
+Doan mo rong 3:
+Trong vat ly, mot bai toan tot can ket noi giua hinh dung vat ly va bieu thuc toan hoc. Truoc khi viet cong thuc, hoc sinh nen ve hinh, chon truc toa do, xac dinh chieu duong, liet ke luc tac dung, va du doan tinh chat ket qua. Neu ket qua tinh ra trai voi du doan vat ly co ban, can quay lai kiem tra dau, don vi, va gia thiet ban dau.
+
+Doan mo rong 4:
+Trong hoa hoc, viec can bang phuong trinh la buoc nen tang. Hoc sinh can phan biet phan ung trao doi, phan ung the, phan ung oxi hoa khu. Doi voi phan ung oxi hoa khu, viec theo doi so oxi hoa se giup khong bi nham lan he so. Ngoai ra, trong bai toan dung dich, can nhat quan giua don vi lit, mililit, mol, gam, va nong do.
+
+Doan mo rong 5:
+Trong van hoc, phan tich tac pham khong phai la ke lai toan bo noi dung. Bai van tot can co luan diem ro, luan cu chat, dan chung chon loc. Hoc sinh nen tranh viet chung chung, ma can di vao chi tiet nghe thuat cu the: hinh anh, ngon ngu, giong dieu, diem nhin tran thuat, ket cau tac pham. Moi nhan xet can gan voi dan chung de tao suc thuyet phuc.
+
+Doan mo rong 6:
+Ky nang doc hieu van ban ngay cang quan trong. De lam tot cau doc hieu, hoc sinh can luyen nhan dien phong cach ngon ngu, phuong thuc bieu dat, bien phap tu tu, thong diep chinh, va thai do tac gia. Khi tra loi, can ngan gon, dung trong tam, tranh dien giai lan man.
+
+Doan mo rong 7:
+Tam ly hoc duong cho thay, hoc sinh hoc tot hon khi co muc tieu nho va phan hoi nhanh. Vi vay, AI tro giang nen phan tach bai hoc lon thanh nhieu muc tieu nho theo ngay: ngay 1 on ly thuyet, ngay 2 lam bai co ban, ngay 3 bai van dung, ngay 4 tong hop sai lam, ngay 5 luyen de mini, ngay 6 chua loi sai, ngay 7 tong ket.
+
+Doan mo rong 8:
+Mot trong nhung sai lam lon la hoc "ngau hung", hom nay hoc rat nhieu, hom sau bo be. Hieu qua ben vung den tu nhip hoc deu, moi ngay 60-120 phut tap trung cao. Ky thuat Pomodoro (25 phut hoc + 5 phut nghi) la mot goi y huu ich, nhat la voi nhung mon can tinh toan hoac doc hieu dai.
+
+Doan mo rong 9:
+Khi luyen de trac nghiem, hoc sinh can phan loai cau sai theo nguyen nhan: sai do thieu cong thuc, sai do nham dau, sai do doc de vo i, sai do khong biet meo giai nhanh. Moi nhom sai can co cach xu ly rieng. Sau 2-3 tuan, neu theo doi ky, hoc sinh se nhin thay tien bo ro rang.
+
+Doan mo rong 10:
+Trong giao tiep hoc thuat, ky nang dat cau hoi rat quan trong. Cau hoi tot thuong cu the, co du lieu, co muc tieu ro. Vi du thay vi hoi "em khong hieu bai nay", hoc sinh nen hoi "tai sao o buoc chuyen ve lai doi dau nhu vay", hoac "vi sao dieu kien x > 0 la bat buoc trong bai logarit".
+
+Doan mo rong 11:
+Tri thuc lien mon la xu huong tat yeu. Toan hoc giup vat ly mo hinh hoa hien tuong. Hoa hoc can toan de tinh toan luong chat. Van hoc can lich su va van hoa de hieu boi canh. AI hoc tap nen khuyen khich hoc sinh nhin van de tu nhieu goc do thay vi hoc tung mon tach roi.
+
+Doan mo rong 12:
+Ren luyen dao duc hoc tap cung quan trong nhu diem so. Trung thuc trong kiem tra, ton trong ban quyen tri thuc, biet noi "em chua biet", biet xin tro giup khi can la nhung pham chat giup hoc sinh phat trien ben vung. AI tro giang can khuyen khich su trung thuc va no luc tu than.
+
+Doan mo rong 13:
+Ve su dung AI trong hoc tap, hoc sinh nen xem AI la cong cu dong hanh, khong phai nguon dap an de sao chep. Cach dung dung la nho AI giai thich, tao bai tap tuong tu, phan tich loi sai, lap ke hoach on tap. Cach dung sai la copy dap an ma khong hieu ban chat.
+
+Doan mo rong 14:
+Khi on thi cuoi ky, hoc sinh nen chuan bi bo de theo cap do: de co ban, de trung binh, de nang cao. Lam xong moi de can co buoc "hau kiem": tim cau sai, viet lai cach giai dung, tong hop cong thuc da dung. Hau kiem moi la buoc tao ra tien bo manh nhat.
+
+Doan mo rong 15:
+Doc sach van hoc can ket hop ca tri va cam. Tri giup hieu ket cau, chu de, nghe thuat. Cam giup tiep nhan ve dep ngon tu va gia tri nhan van. Bai van thuyet phuc la bai van can bang giua ly le va cam xuc, giua nhan xet ca nhan va dan chung van ban.
+
+Doan mo rong 16:
+Trong phong thi trac nghiem, quan ly thoi gian la ky nang song con. Co the chia de thanh 3 luot: luot 1 lam cau de, luot 2 lam cau vua, luot 3 xu ly cau kho va do dap an. Khong nen sa qua lau vao mot cau de tranh mat diem cac cau khac.
+
+Doan mo rong 17:
+Khi hoc sinh mat dong luc, can quay ve muc tieu dai han: hoc de mo rong co hoi tuong lai, de tro thanh phien ban tot hon cua chinh minh, de dong gop cho gia dinh va xa hoi. Dong luc khong phai luc nao cung manh, nhung ky luat co the giup ta di tiep ngay ca khi chua co hung.
+
+Doan mo rong 18:
+Loi khuyen cuoi cung cho AI tro giang: hay luon than thien, ton trong, khong phan xet. Moi hoc sinh co toc do va cach hoc khac nhau. Cau tra loi tot nhat la cau tra loi vua du, de hieu, dung muc do, va mo duong cho hoc sinh tu tu duy tiep.
+
+============================================================
+KET THUC TAI LIEU
+============================================================
+
+Ghi chu:
+Tai lieu nay duoc bien soan de huan luyen AI giao duc noi bo.
+Co the tiep tuc bo sung bang cach them:
+- De cương on tap tung khoi lop
+- Bo cong thuc tong hop theo mon
+- Cau hoi trac nghiem mau theo muc do
+- Tap bai van mau theo chu de
+
+============================================================
+PHAN PHU LUC STEM CHUYEN SAU (TICH HOP)
+============================================================
+
+STEM 1. TOAN HOC NANG CAO
+- Hang dang thuc dang nho:
+  (a+b)^2 = a^2 + 2ab + b^2
+  (a-b)^2 = a^2 - 2ab + b^2
+  a^2 - b^2 = (a-b)(a+b)
+  (a+b)^3 = a^3 + 3a^2b + 3ab^2 + b^3
+  (a-b)^3 = a^3 - 3a^2b + 3ab^2 - b^3
+
+- Cap so cong:
+  u_n = u_1 + (n-1)d
+  S_n = n(u_1 + u_n)/2 = n(2u_1 + (n-1)d)/2
+
+- Cap so nhan:
+  u_n = u_1*q^(n-1)
+  S_n = u_1*(q^n - 1)/(q - 1), q khac 1
+
+- To hop xac suat:
+  P_n = n!
+  A_n^k = n!/(n-k)!
+  C_n^k = n!/[k!(n-k)!]
+  Cong thuc Newton:
+  (a+b)^n = tong C_n^k a^(n-k)b^k
+
+STEM 2. VAT LY NANG CAO
+- Dao dong:
+  W = 1/2*k*A^2 = 1/2*m*omega^2*A^2
+  W_d = 1/2*m*v^2
+  W_t = 1/2*k*x^2
+
+- Mach RLC (co ban):
+  Z = sqrt(R^2 + (Z_L - Z_C)^2)
+  Z_L = omega*L
+  Z_C = 1/(omega*C)
+  I = U/Z
+
+- Song dien tu:
+  c = lambda*f
+  c xap xi 3*10^8 m/s
+
+STEM 3. HOA HOC NANG CAO
+- Bao toan khoi luong:
+  tong m chat tham gia = tong m san pham
+
+- Bao toan nguyen to:
+  tong so mol nguyen to truoc phan ung = sau phan ung
+
+- Bao toan electron (oxi hoa khu):
+  tong e nhuong = tong e nhan
+
+- pH va pOH:
+  pH + pOH = 14 (o 25 do C)
+
+- So mol khi o dk tieu chuan:
+  n = V/22.4 (lit)
+
+============================================================
+PHAN PHU LUC VAN HOC CHUYEN SAU (TICH HOP)
+============================================================
+
+VAN 1. BO KHUNG PHAN TICH THO
+1) Gioi thieu tac gia, tac pham, doan tho.
+2) Neu mach cam xuc chu dao.
+3) Phan tich hinh anh tho tieu bieu.
+4) Phan tich ngong ngu, nhip dieu, bien phap tu tu.
+5) Danh gia gia tri noi dung va nghe thuat.
+
+VAN 2. BO KHUNG PHAN TICH TRUYEN NGAN
+1) Hoan canh sang tac, vi tri doan trich.
+2) Tinh huong truyen.
+3) Nhan vat trung tam (hanh dong, loi noi, tam ly).
+4) Gia tri hien thuc va nhan dao.
+5) Nghe thuat tran thuat.
+
+VAN 3. MAU MO BAI NGAN
+"Van hoc la tam guong phan chieu doi song va tam hon con nguoi.
+Tac pham ... cua ... la mot minh chung tieu bieu, khong chi cho thay
+hien thuc xa hoi ma con lam sang ro ve dep nhan van ben vung."
+
+VAN 4. MAU KET BAI NGAN
+"Bang but phap nghe thuat tinh te va tam long nhan dao sau sac,
+tac gia da de lai cho nguoi doc nhung suy ngam lau ben ve con nguoi,
+ve cuoc song, va ve gia tri cua long yeu thuong."
+
+VAN 5. DAN CHUNG NGHI LUAN XA HOI THEM
+- Tu hoc va hoc suot doi trong ky nguyen so.
+- Van hoa doc sach o gioi tre.
+- Tranh thong tin gia tren mang xa hoi.
+- Trach nhiem bao ve moi truong hoc duong xanh sach dep.
+
+============================================================
+PHAN PHU LUC HUONG DAN CHATBOT TRA LOI THEO CAP DO
+============================================================
+
+Cap do 1 (co ban):
+- Tra loi ngan gon 3-5 cau.
+- Dung ngon ngu de hieu.
+
+Cap do 2 (trung binh):
+- Neu cong thuc.
+- Neu 2 vi du.
+- Co canh bao loi sai pho bien.
+
+Cap do 3 (nang cao):
+- Giai tung buoc.
+- Phan tich vi sao dung/sai.
+- De xuat bai tuong tu de luyen.
+
+Mau cau hoi goi y:
+- "Giai chi tiet tung buoc bai nay"
+- "Cho em 5 bai tap cung dang tu de den kho"
+- "Vi sao cach lam cua em sai o buoc 3"
+
+============================================================
+KET THUC BAN TICH HOP ALL-IN-ONE
+============================================================
+
+============================================================
+PHAN BO SUNG SIEU DAI A - NGAN HANG BAI TAP TOAN CO LOI GIAI TOM TAT
+============================================================
+
+Bai 1:
+Giai he:
+2x + y = 7
+x - y = 2
+Tom tat:
+Cong hai phuong trinh: 3x = 9 => x = 3.
+Thay vao x - y = 2 => y = 1.
+
+Bai 2:
+Giai phuong trinh:
+x^2 - 5x + 6 = 0
+Tom tat:
+Phan tich: (x-2)(x-3)=0 => x=2 hoac x=3.
+
+Bai 3:
+Cho ham so y = -x^2 + 4x - 3.
+Tim dinh va truc doi xung.
+Tom tat:
+a=-1, b=4.
+x_dinh = -b/(2a)=2.
+y_dinh = -4 + 8 - 3 = 1.
+Dinh I(2,1), truc x=2.
+
+Bai 4:
+Tinh tong cap so cong:
+u1=3, d=2, n=20.
+Tom tat:
+u20 = 3 + 19*2 = 41.
+S20 = 20*(3+41)/2 = 440.
+
+Bai 5:
+Tinh gioi han:
+lim (x->2) (x^2-4)/(x-2)
+Tom tat:
+Rut gon: (x-2)(x+2)/(x-2)=x+2 => lim = 4.
+
+Bai 6:
+Dao ham:
+y = (3x^2 + 1)(x - 4)
+Tom tat:
+y' = 6x(x-4) + (3x^2+1)*1 = 9x^2 - 24x + 1.
+
+Bai 7:
+Xac dinh x de bieu thuc co nghia:
+sqrt(2x-1) + 1/(x-3)
+Tom tat:
+2x-1>=0 => x>=1/2.
+x-3 != 0 => x != 3.
+Tap xac dinh: [1/2, +oo) tru {3}.
+
+Bai 8:
+Tinh xac suat rut duoc la tim do trong bo bai 52 la.
+Tom tat:
+Co 26 la do.
+P = 26/52 = 1/2.
+
+Bai 9:
+Tam giac vuong co canh goc vuong 6 va 8.
+Tinh canh huyen va dien tich.
+Tom tat:
+c = sqrt(36+64)=10.
+S = 1/2*6*8 = 24.
+
+Bai 10:
+Tim GTLN GTNN cua f(x)=x^2-2x+3 tren [0,3].
+Tom tat:
+f'(x)=2x-2=0 => x=1.
+f(0)=3, f(1)=2, f(3)=6.
+GTNN=2 tai x=1, GTLN=6 tai x=3.
+
+... (Mo rong nguyen tac: AI co the tao them bai tuong tu theo dang)
+
+============================================================
+PHAN BO SUNG SIEU DAI B - NGAN HANG BAI TAP VAT LY THEO CHUYEN DE
+============================================================
+
+Chuyen de 1: Chuyen dong thang
+- Bai mau:
+Xe khoi hanh tu dung yen, a=2 m/s^2, sau 5s:
+v = at = 10 m/s
+s = 1/2*a*t^2 = 25 m
+
+- Bai tu luyen 1:
+Vat chuyen dong deu v=12 m/s trong 15s.
+Tinh quang duong.
+Goi y: s=vt.
+
+- Bai tu luyen 2:
+Vat co v0=5, a=-1, t=3.
+Tinh v va s.
+Goi y: v=v0+at; s=v0t+1/2at^2.
+
+Chuyen de 2: Dinh luat Newton
+- Bai mau:
+m=4 kg, a=1.5 m/s^2 => F=6 N.
+
+- Bai tu luyen:
+Vat 2 kg chiu luc keo 10 N tren mat phang ngang bo qua ma sat.
+Tinh gia toc.
+Goi y: a=F/m=5 m/s^2.
+
+Chuyen de 3: Cong suat
+- Bai mau:
+Dong co sinh cong 36000 J trong 2 phut.
+P = A/t = 36000/120 = 300 W.
+
+Chuyen de 4: Dien hoc
+- Bai mau:
+R=20 ohm, U=10V.
+I = U/R = 0.5A.
+P = UI = 5W.
+
+- Bai tu luyen:
+Mach gom R1=10 ohm noi tiep R2=20 ohm, U=9V.
+Tinh I mach va U tren moi dien tro.
+Goi y:
+Rtd=30, I=0.3A, U1=3V, U2=6V.
+
+Chuyen de 5: Song co
+- Bai mau:
+f=50Hz, lambda=0.2m => v=10 m/s.
+
+... (AI tiep tuc sinh bo bai de-tb-kho theo cung khung)
+
+============================================================
+PHAN BO SUNG SIEU DAI C - NGAN HANG HOA HOC THEO DANG TOAN
+============================================================
+
+Dang 1: Tinh theo PTHH
+Vi du:
+2H2 + O2 -> 2H2O
+Neu co 4 mol H2 thi can 2 mol O2 va tao 4 mol H2O.
+
+Dang 2: Nong do dung dich
+Vi du:
+Can pha 250 ml NaCl 0.5M.
+n = C*V = 0.5*0.25 = 0.125 mol.
+m = n*M = 0.125*58.5 = 7.3125g.
+
+Dang 3: pH
+Vi du:
+[H+] = 10^-3 => pH=3.
+
+Dang 4: Hieu suat phan ung
+H% = luong thuc te / luong ly thuyet *100.
+
+Dang 5: Kim loai tac dung axit
+Zn + 2HCl -> ZnCl2 + H2
+1 mol Zn tao 1 mol H2.
+
+... (AI sinh them cau hoi trac nghiem va tu luan cung cau truc)
+
+============================================================
+PHAN BO SUNG SIEU DAI D - VAN NGHI LUAN, DOC HIEU, VAN HOC
+============================================================
+
+Mau dan y nghi luan hien tuong doi song:
+De bai:
+Trinh bay suy nghi ve hien tuong nghien mang xa hoi o gioi tre.
+
+Dan y:
+Mo bai:
+- Gioi thieu hien tuong.
+Than bai:
+- Giai thich "nghien mang xa hoi".
+- Bieu hien: online qua muc, bo be hoc tap, mat ngu.
+- Tac hai: suc khoe, tinh than, ket qua hoc.
+- Nguyen nhan: thieu ky luat, anh huong ban be, noi dung gay nghien.
+- Giai phap: gioi han thoi gian, hoat dong the thao, doc sach.
+Ket bai:
+- Khang dinh can su dung mang van minh.
+
+Mau doan van 200 chu:
+"Mang xa hoi la cong cu huu ich neu duoc dung dung cach, nhung co the tro thanh can tro lon doi voi hoc sinh khi bi lam dung. Nhieu ban tre da danh qua nhieu thoi gian de luot tin, xem video ngan, bo qua viec hoc va nghi ngoi. Hau qua de thay la ket qua hoc tap giam sut, mat tap trung, de cau gat va thu dong trong giao tiep doi thuc. Nguyen nhan cua tinh trang nay mot phan den tu tam ly thich giai tri nhanh, mot phan do thieu ky nang quan ly thoi gian. De khac phuc, hoc sinh can lap thoi khoa bieu ro rang, dat gio gioi han su dung dien thoai, tang cuong van dong va tham gia hoat dong tap the. Gia dinh va nha truong can dong hanh, huong dan cach dung cong nghe an toan va co trach nhiem. Chi khi kiem soat duoc thoi quen so, hoc sinh moi co the phat huy toi da nang luc hoc tap va phat trien toan dien."
+
+Mau mo bai van hoc:
+"Tac pham ... cua ... la tieng noi nghe thuat dep de, noi bat o su ket hop giua gia tri hien thuc va gia tri nhan dao. Qua do, tac gia khong chi phan anh mot thoi dai ma con gui gam nhieu thong diep sau sac ve con nguoi."
+
+Mau ket bai van hoc:
+"Bang tai nang nghe thuat va tam long nhan hau, tac gia da de lai dau an sau dam trong long nguoi doc. Tac pham vi the van giu nguyen gia tri, goi mo cho chung ta cach song dep va cach nhin nhan con nguoi bang long yeu thuong."
+
+Phan tich nhanh tac pham "Lang" (Kim Lan):
+- Tinh huong truyen doc dao: ong Hai nghe tin lang theo giac.
+- Dien bien tam ly:
+  soc -> dau don -> xau ho -> trung thanh voi khang chien -> vo oa hanh phuc khi cai chinh.
+- Gia tri:
+  tinh yeu lang thong nhat voi tinh yeu nuoc.
+
+Phan tich nhanh "Dong chi" (Chinh Huu):
+- Co so hinh thanh tinh dong chi: cung canh ngo, cung ly tuong.
+- Bieu hien:
+  chia se gian lao, sat canh chien dau.
+- Hinh anh "dau sung trang treo":
+  bieu tuong dep cho ly tuong va hien thuc.
+
+============================================================
+PHAN BO SUNG SIEU DAI E - HOI DAP MAU CHO AI CHATBOT
+============================================================
+
+Hoi:
+"Em mat goc toan, bat dau tu dau?"
+Tra loi mau:
+"Em bat dau tu 4 muc:
+1) On phep bien doi co ban, phan so, can bac hai.
+2) On phuong trinh bac nhat, bac hai.
+3) Moi ngay lam 10 bai de, 5 bai vua.
+4) Ghi so tay loi sai.
+Trong 14 ngay em se thay tien bo ro."
+
+Hoi:
+"Lam sao hoc thuoc cong thuc vat ly?"
+Tra loi mau:
+"Khong hoc vay. Em lap bang:
+ten cong thuc - y nghia - don vi - vi du.
+Moi cong thuc lam 2 bai ung dung nho."
+
+Hoi:
+"Viet mo bai nghi luan xa hoi sao cho hay?"
+Tra loi mau:
+"Mo bai can 3 cau:
+1 cau dat van de,
+1 cau neu y nghia,
+1 cau chot huong nghi luan.
+Tranh mo bai qua dai."
+
+Hoi:
+"Em can giai chi tiet bai he phuong trinh."
+Tra loi mau:
+"Buoc 1: Chon phuong phap the hoac cong dai so.
+Buoc 2: Bien doi ve 1 an.
+Buoc 3: Tim an thu nhat.
+Buoc 4: Thay nguoc tim an thu hai.
+Buoc 5: Thu lai vao he ban dau."
+
+============================================================
+PHAN BO SUNG SIEU DAI F - LO TRINH ON THI 30 NGAY
+============================================================
+
+Ngay 1-5:
+- On nen tang toan co ban, vat ly dong hoc, hoa hoc nguyen tu.
+
+Ngay 6-10:
+- Tang bai tap van dung vua.
+- Moi ngay 1 doan nghi luan 200 chu.
+
+Ngay 11-15:
+- Luyen de tong hop 60 phut/de.
+- Rut kinh nghiem loi sai.
+
+Ngay 16-20:
+- Tang toc: de hon hop de-vua-kho.
+- On lai cong thuc hay quen.
+
+Ngay 21-25:
+- Gia lap thi that.
+- Tap chien luoc phan bo thoi gian.
+
+Ngay 26-30:
+- On nhe, tong ket so tay loi sai.
+- Ngu du, giu tam ly on dinh.
+
+============================================================
+PHAN BO SUNG SIEU DAI G - DANH MUC TU KHOA CHUYEN MON
+============================================================
+
+Toan:
+phuong trinh, he phuong trinh, bat phuong trinh, ham so, dao ham, cuc tri, xac suat, to hop, cap so cong, cap so nhan.
+
+Vat ly:
+dong hoc, dong luc hoc, luc ma sat, dao dong dieu hoa, song co, mach dien, cam ung dien tu, quang hoc.
+
+Hoa hoc:
+so mol, nong do mol, pH, phan ung oxi hoa khu, can bang phuong trinh, axit, bazo, muoi, este, polyme.
+
+Van hoc:
+gia tri hien thuc, gia tri nhan dao, tinh huong truyen, nhan vat, diem nhin tran thuat, bien phap tu tu, thong diep tac pham.
+
+Nghi luan:
+giai thich, phan tich, chung minh, binh luan, so sanh, bac bo, dan chung, luan diem, luan cu.
+
+============================================================
+PHAN BO SUNG SIEU DAI H - GHI CHU THUC HANH CHO HE THONG AI
+============================================================
+
+Quy tac 1:
+Neu hoc sinh yeu cau "ngan gon", tra loi trong 5-8 dong.
+
+Quy tac 2:
+Neu hoc sinh yeu cau "chi tiet", can neu ro tung buoc va ly do.
+
+Quy tac 3:
+Neu hoc sinh hoi van hoc, uu tien dan chung ngan va phan tich nghe thuat.
+
+Quy tac 4:
+Neu hoc sinh hoi cong thuc, can kem don vi va dieu kien ap dung.
+
+Quy tac 5:
+Neu cau hoi mo ho, AI hoi lai 1 cau de lam ro de bai.
+
+Quy tac 6:
+Khong dua thong tin khong chac chan, neu khong ro thi noi "can kiem tra them".
+
+============================================================
+KET THUC PHIEN BAN SIEU DAI
+============================================================
+
