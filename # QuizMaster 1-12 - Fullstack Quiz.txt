@@ -1,0 +1,165 @@
+# QuizMaster 1-12 - Fullstack Quiz App
+
+Ung dung luyen thi trac nghiem cho hoc sinh lop 1-12, gom backend Node.js + frontend Flutter.
+
+## Tong quan du an
+
+Du an chinh gom 2 module:
+
+- `quiz_app_backend`: REST API voi Express, ho tro 2 che do CSDL (SQLite mac dinh, MySQL tuy chon), co phan quyen `user/teacher/admin`.
+- `quiz_app_frontend`: ung dung Flutter (Android, Web, Windows) cho hoc sinh va trang quan tri.
+
+Thu muc tai lieu bo sung:
+
+- `API/`: tai lieu dac ta API va database.
+- `minh hoa/`: tai lieu minh hoa (README + DOCX).
+- `week1/`: bai tap HTML tuan 1.
+
+## Tinh nang chinh
+
+### Luong hoc sinh
+
+- Dang nhap tai khoan, luu phien va vai tro nguoi dung.
+- Dashboard ca nhan: thong ke so lan thi, diem trung binh, diem cao nhat.
+- Kham pha de theo lop, mon, do kho, tu khoa tim kiem.
+- Lam bai trac nghiem, nop bai, xem ket qua ngay.
+- Xem lich su bai lam, bang xep hang theo lop.
+- Luu/xoa de yeu thich de on tap lai nhanh.
+
+### Luong quan tri
+
+- Dashboard tong quan he thong.
+- Quan ly hoc sinh (them/sua/xoa, import CSV, export, reset mat khau).
+- Quan ly de thi (them/sua/xoa, sinh de tu dong).
+- Quan ly luot thi (xem, xoa theo ban ghi/lam sach du lieu).
+- Cau hinh AI, quan ly tai lieu AI, chat AI (theo cac endpoint backend hien co).
+
+## Cong nghe su dung
+
+- Backend: Node.js, Express, sqlite3/sqlite, mysql2, multer, mammoth, pdf-parse.
+- Frontend: Flutter (Dart), `http`, `file_picker`.
+- Database:
+  - Mac dinh: SQLite (`quiz_app_backend/data/quiz.sqlite`).
+  - Tuy chon: MySQL + phpMyAdmin qua Docker Compose.
+
+## Yeu cau moi truong
+
+- Node.js 18+ va npm.
+- Flutter SDK >= 3.3.0.
+- (Tuy chon) Docker Desktop neu dung MySQL + phpMyAdmin.
+
+## Huong dan chay nhanh
+
+### 1) Chay backend voi SQLite (de nhat)
+
+```bash
+cd quiz_app_backend
+npm install
+npm start
+```
+
+Backend mac dinh chay tai: `http://localhost:3000/api`
+
+### 2) Chay backend voi MySQL (tuy chon)
+
+Trong `quiz_app_backend`:
+
+```bash
+docker compose up -d
+```
+
+Sau do import schema `database/schema_mysql.sql` qua phpMyAdmin (`http://localhost:8080`) va seed du lieu:
+
+```bash
+cd quiz_app_backend
+set MYSQL_HOST=127.0.0.1
+set MYSQL_USER=root
+set MYSQL_PASSWORD=root
+set MYSQL_DATABASE=quizmaster
+npm run seed
+npm run start:mysql
+```
+
+Chi tiet xem tai `quiz_app_backend/database/README_PHPMYADMIN.md`.
+
+### 3) Chay frontend Flutter
+
+```bash
+cd quiz_app_frontend
+flutter pub get
+flutter run
+```
+
+Luu y cau hinh API trong `quiz_app_frontend/lib/main.dart`:
+
+- Android emulator: `http://10.0.2.2:3000/api`
+- Web/Windows: `http://localhost:3000/api`
+
+## Tai khoan mau
+
+Sau khi seed (MySQL) hoac du lieu tuong duong (SQLite):
+
+- `admin` / `admin123` (admin)
+- `student1` / `123456` (user)
+- `student2` / `123456` (user)
+- `student3` / `123456` (user)
+
+## API noi bat
+
+Mot so endpoint quan trong:
+
+- `POST /api/auth/login`
+- `GET /api/quizzes`, `GET /api/quizzes/:id`
+- `POST /api/attempts`, `GET /api/attempts`
+- `GET /api/rankings`, `GET /api/recommendations/:userId`
+- `GET/POST/DELETE /api/favorites`
+- Nhom admin: `/api/admin/*` (overview, users, students, quizzes, attempts, AI config/documents)
+
+Tai lieu chi tiet:
+
+- `quiz_app_backend/README.md`
+- `quiz_app_backend/API_SPEC.md`
+- `API/README.md`
+
+## Kiem thu
+
+### Backend
+
+```bash
+cd quiz_app_backend
+npm test
+```
+
+Bao gom unit test scoring va script test API co ban.
+
+### Frontend
+
+Bao cao test tich hop/chuc nang nam o:
+
+- `quiz_app_frontend/INTEGRATION_TEST_REPORT.md`
+
+## Cau truc thu muc chinh
+
+```text
+chuyende2/
+|- quiz_app_backend/
+|  |- server_sqlite.js
+|  |- server_mysql.js
+|  |- database/
+|  |- tests/
+|  `- utils/
+|- quiz_app_frontend/
+|  |- lib/main.dart
+|  |- pubspec.yaml
+|  `- test/
+|- API/
+|- minh hoa/
+`- week1/
+```
+
+## Ghi chu
+
+- Node modules da duoc commit trong workspace; khi lam viec nhom nen thong nhat chinh sach commit phu thuoc.
+- Neu frontend khong ket noi duoc backend, kiem tra lai `baseUrl` va cong `3000`.
+
+

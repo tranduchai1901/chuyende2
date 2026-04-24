@@ -31,7 +31,7 @@ Dự án gồm hai phần:
 
 - Hiển thị từng **câu hỏi** và các **lựa chọn** (dạng chip/chọn một đáp án).
 - **Thanh tiến độ** theo số câu đã chọn đáp án.
-- Có thể **đánh dấu yêu thích** đề đang làm (icon tim).
+- Có thể **đánh dấu yêu thích** đề đang làm (icon tim)..
 - **Nộp bài**: gửi đáp án lên server; server chấm và trả về điểm.
 
 ### 5. Kết quả và lịch sử
