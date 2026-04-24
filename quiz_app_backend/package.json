@@ -1,0 +1,24 @@
+{
+  "name": "quiz-app-backend",
+  "version": "1.0.0",
+  "description": "Backend API for grade 1-12 quiz app",
+  "main": "server_sqlite.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server_sqlite.js",
+    "start:mysql": "node server_mysql.js",
+    "dev": "node server_sqlite.js",
+    "seed": "node scripts/seed_mysql.js",
+    "test": "node --test tests/unit/scoring.test.js && node tests/run-tests.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mammoth": "^1.12.0",
+    "multer": "^2.1.1",
+    "mysql2": "^3.11.5",
+    "pdf-parse": "^2.4.5",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  }
+}

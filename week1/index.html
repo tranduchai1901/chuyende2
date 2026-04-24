@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tuần 1 — Mô tả chức năng &amp; Mockup UI — QuizMaster 1–12</title>
+  <style>
+    :root {
+      --bg: #0f0f1a;
+      --card: #1a1a2e;
+      --text: #e8e8f0;
+      --muted: #9ca3af;
+      --accent: #7c6cf0;
+      --accent2: #38bdf8;
+      --gold: #fbbf24;
+      --phone-w: 320px;
+      --phone-h: 640px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: linear-gradient(135deg, #1a1035 0%, #0f172a 50%, #0c4a6e 100%);
+      color: var(--text);
+      line-height: 1.55;
+    }
+    header {
+      padding: 2rem 1.5rem;
+      text-align: center;
+      background: rgba(0,0,0,.25);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    header h1 { margin: 0 0 0.5rem; font-size: 1.65rem; }
+    header p { margin: 0; color: var(--muted); max-width: 42rem; margin-inline: auto; }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      padding: 0.75rem 1rem;
+      background: rgba(15,15,26,.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    nav a {
+      color: var(--accent2);
+      text-decoration: none;
+      font-size: 0.9rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid rgba(56,189,248,.35);
+    }
+    nav a:hover { background: rgba(56,189,248,.15); }
+    section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem;
+    }
+    section h2 {
+      font-size: 1.35rem;
+      margin: 0 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent);
+      display: inline-block;
+    }
+    .desc-grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+    .desc-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 1.15rem 1.25rem;
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .desc-card h3 { margin: 0 0 0.5rem; font-size: 1.05rem; color: var(--accent2); }
+    .desc-card ul { margin: 0; padding-left: 1.2rem; color: var(--muted); }
+    .desc-card li { margin-bottom: 0.35rem; }
+    .live-hint {
+      background: rgba(124,108,240,.2);
+      border: 1px solid rgba(124,108,240,.4);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .live-hint code { background: rgba(0,0,0,.35); padding: 0.15rem 0.45rem; border-radius: 6px; }
+
+    .mockups {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .mockup-wrap {
+      text-align: center;
+    }
+    .mockup-wrap h3 {
+      margin: 0 0 0.75rem;
+      font-size: 1rem;
+      color: var(--gold);
+    }
+    .phone {
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border-radius: 28px;
+      border: 4px solid #2d2d44;
+      box-shadow: 0 20px 50px rgba(0,0,0,.45), inset 0 0 0 2px rgba(255,255,255,.08);
+      overflow: hidden;
+      background: #111;
+      margin-inline: auto;
+    }
+    .phone-notch {
+      height: 22px;
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      padding-bottom: 4px;
+    }
+    .phone-notch span {
+      width: 90px;
+      height: 18px;
+      background: #000;
+      border-radius: 0 0 12px 12px;
+    }
+    .screen {
+      height: calc(100% - 22px);
+      overflow-y: auto;
+      background: linear-gradient(180deg, #f8f5ff 0%, #f0fbff 100%);
+      color: #1e1b2e;
+      font-size: 12px;
+      text-align: left;
+    }
+    .bar {
+      height: 44px;
+      background: linear-gradient(90deg, #5c6bc0, #29b6f6);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .pad { padding: 12px; }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #5c6bc0, #7e57c2);
+      color: #fff;
+      font-weight: 600;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+    .field {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    }
+    .row-stat {
+      display: flex;
+      gap: 6px;
+    }
+    .stat {
+      flex: 1;
+      text-align: center;
+      padding: 8px 4px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #e0e7ff, #d1f5ff);
+      font-size: 11px;
+    }
+    .stat b { display: block; font-size: 15px; }
+    .chip {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #ede7f6;
+      font-size: 10px;
+      margin: 2px;
+    }
+    .progress {
+      height: 4px;
+      background: #e0e0e0;
+      border-radius: 2px;
+      margin: 8px 0;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 45%;
+      background: #5c6bc0;
+      border-radius: 2px;
+    }
+    .list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 11px;
+    }
+    .rank-gold { background: linear-gradient(90deg, #ffe082, #ffcc80); border-radius: 10px; padding: 8px; margin-bottom: 6px; }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Tuần 1 — Mô tả chức năng &amp; phác thảo giao diện</h1>
+    <p>Ứng dụng: <strong>QuizMaster 1–12</strong> — Luyện thi trắc nghiệm theo lớp (Flutter + API + SQLite)</p>
+  </header>
+
+  <nav>
+    <a href="#mo-ta">Mô tả chức năng</a>
+    <a href="#mock-dang-nhap">Đăng nhập</a>
+    <a href="#mock-dashboard">Bảng điều khiển</a>
+    <a href="#mock-kham-pha">Khám phá đề</a>
+    <a href="#mock-lam-bai">Làm bài</a>
+    <a href="#mock-ket-qua">Kết quả</a>
+    <a href="#mock-lich-su">Lịch sử</a>
+    <a href="#mock-xep-hang">Xếp hạng</a>
+    <a href="#mock-yeu-thich">Yêu thích</a>
+    <a href="#live-server">Live Server</a>
+  </nav>
+
+  <section id="mo-ta">
+    <h2>1. Bản mô tả các chức năng của ứng dụng</h2>
+    <div class="desc-grid">
+      <div class="desc-card">
+        <h3>Đăng nhập &amp; phân quyền cơ bản</h3>
+        <ul>
+          <li>Nhập tài khoản / mật khẩu, gọi API xác thực.</li>
+          <li>Sau đăng nhập: lưu thông tin học sinh (họ tên, lớp) để cá nhân hóa.</li>
+        </ul>
+      </div>
+      <div class="desc-card">
+        <h3>Bảng điều khiển (Dashboard)</h3>
+        <ul>
+          <li>Thống kê nhanh: số lần thi, điểm trung bình, điểm cao nhất.</li>
+          <li>Đề gợi ý theo lớp của học sinh.</li>
+          <li>Điều hướng tới các màn hình chính.</li>
+        </ul>
+      </div>
+      <div class="desc-card">
+        <h3>Khám phá đề thi</h3>
+        <ul>
+          <li>Chọn lớp, môn học.</li>
+          <li>Lọc độ khó (Dễ / Trung bình / Khó).</li>
+          <li>Tìm kiếm theo tên đề.</li>
+        </ul>
+      </div>
+      <div class="desc-card">
+        <h3>Làm bài trắc nghiệm</h3>
+        <ul>
+          <li>Hiển thị câu hỏi và các lựa chọn.</li>
+          <li>Thanh tiến độ theo số câu đã chọn.</li>
+          <li>Lưu đề yêu thích (tùy chọn).</li>
+          <li>Nộp bài, gửi đáp án lên server để chấm.</li>
+        </ul>
+      </div>
+      <div class="desc-card">
+        <h3>Kết quả &amp; lịch sử</h3>
+        <ul>
+          <li>Màn kết quả: điểm %, số câu đúng / tổng số câu.</li>
+          <li>Lịch sử bài đã nộp theo thời gian.</li>
+        </ul>
+      </div>
+      <div class="desc-card">
+        <h3>Bảng xếp hạng &amp; yêu thích</h3>
+        <ul>
+          <li>Xếp hạng theo lớp (điểm TB, số lần thi).</li>
+          <li>Danh sách đề đã đánh dấu yêu thích.</li>
+        </ul>
+      </div>
+      <div class="desc-card">
+        <h3>Backend &amp; dữ liệu</h3>
+        <ul>
+          <li>API REST (Node.js + Express).</li>
+          <li>Lưu trữ SQLite: người dùng, lớp, môn, đề, câu hỏi, lượt thi, yêu thích.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="mockups">
+    <h2>2. Bản thiết kế UI (mockup HTML) — các giao diện chính</h2>
+    <p style="color: var(--muted); max-width: 48rem;">
+      Các khung dưới đây mô phỏng màn hình điện thoại (wireframe có màu). Đây là phác thảo tuần 1; ứng dụng thật có thể tinh chỉnh chi tiết hơn khi code Flutter.
+    </p>
+
+    <div class="mockups" style="margin-top: 1.5rem;">
+      <!-- Đăng nhập -->
+      <div class="mockup-wrap" id="mock-dang-nhap">
+        <h3>Màn đăng nhập</h3>
+        <div class="phone">
+          <div class="phone-notch"><span></span></div>
+          <div class="screen">
+            <div class="pad" style="padding-top: 24px; text-align: center;">
+              <div style="font-size: 36px;">🎓</div>
+              <div style="font-weight: 800; font-size: 16px; margin: 8px 0;">QuizMaster 1–12 ✨</div>
+              <div style="color: #666; font-size: 11px; margin-bottom: 16px;">Luyện thi trắc nghiệm</div>
+              <input class="field" type="text" placeholder="Tài khoản" value="student1" readonly />
+              <input class="field" type="password" placeholder="Mật khẩu" value="••••••" readonly />
+              <button class="btn" type="button">Đăng nhập</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard -->
+      <div class="mockup-wrap" id="mock-dashboard">
+        <h3>Bảng điều khiển</h3>
+        <div class="phone">
+          <div class="phone-notch"><span></span></div>
+          <div class="screen">
+            <div class="bar">Bảng điều khiển</div>
+            <div class="pad">
+              <div style="font-weight: 700; margin-bottom: 8px;">Xin chào Nguyễn Văn A</div>
+              <div class="row-stat">
+                <div class="stat"><b>12</b>Lần thi</div>
+                <div class="stat"><b>86</b>Điểm TB</div>
+                <div class="stat"><b>100</b>Cao nhất</div>
+              </div>
+              <div class="card" style="margin-top: 10px;">
+                <strong>Luyện thi nâng cao</strong>
+                <div style="color: #666; font-size: 10px;">Lọc lớp · môn · độ khó</div>
+              </div>
+              <div class="card">
+                <strong>Bảng xếp hạng</strong>
+                <div style="color: #666; font-size: 10px;">So sánh theo lớp</div>
+              </div>
+              <div class="card">
+                <strong>Đề gợi ý cho bạn</strong>
+                <div class="list-item"><span>Hàm số cơ bản</span><span style="color:#5c6bc0;">Làm ngay →</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Khám phá -->
+      <div class="mockup-wrap" id="mock-kham-pha">
+        <h3>Khám phá đề thi</h3>
+        <div class="phone">
+          <div class="phone-notch"><span></span></div>
+          <div class="screen">
+            <div class="bar">Khám phá đề thi</div>
+            <div class="pad">
+              <div style="display: flex; gap: 6px;">
+                <select class="field" style="flex:1; margin:0;"><option>Lớp 10</option></select>
+                <select class="field" style="flex:1; margin:0;"><option>Toán</option></select>
+              </div>
+              <input class="field" placeholder="🔍 Tìm theo tên đề" />
+              <div>
+                <span class="chip">Tất cả</span>
+                <span class="chip">Dễ</span>
+                <span class="chip">Trung bình</span>
+                <span class="chip">Khó</span>
+              </div>
+              <div class="card" style="margin-top: 8px;">
+                <strong>Hàm số cơ bản</strong>
+                <div style="color:#666;">Toán · Trung bình · 4 câu</div>
+              </div>
+              <div class="card">
+                <strong>Động học chất điểm</strong>
+                <div style="color:#666;">Vật lý · Khó · 4 câu</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Làm bài -->
+      <div class="mockup-wrap" id="mock-lam-bai">
+        <h3>Làm bài</h3>
+        <div class="phone">
+          <div class="phone-notch"><span></span></div>
+          <div class="screen">
+            <div class="bar" style="justify-content: space-between;">
+              <span>Hàm số cơ bản</span>
+              <span>♡</span>
+            </div>
+            <div class="pad">
+              <div class="progress"><i></i></div>
+              <div style="font-size: 11px; color:#555;">Tiến độ: 2/4 câu</div>
+              <div class="card">
+                <strong>Câu 1:</strong> Đạo hàm của x² là?
+                <div style="margin-top:6px;">
+                  <span class="chip" style="background:#c8e6c9;">2x</span>
+                  <span class="chip">x</span>
+                  <span class="chip">x²</span>
+                  <span class="chip">2</span>
+                </div>
+              </div>
+              <button class="btn">Nộp bài</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kết quả -->
+      <div class="mockup-wrap" id="mock-ket-qua">
+        <h3>Kết quả</h3>
+        <div class="phone">
+          <div class="phone-notch"><span></span></div>
+          <div class="screen">
+            <div class="pad" style="text-align:center; padding-top: 48px;">
+              <div style="font-size: 48px;">🏆</div>
+              <div style="font-size: 22px; font-weight: 800; margin: 8px 0;">Điểm 100</div>
+              <div style="color:#555;">Đúng 4/4 câu</div>
+              <button class="btn" style="margin-top: 20px;">Về trang chủ</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lịch sử -->
+      <div class="mockup-wrap" id="mock-lich-su">
+        <h3>Lịch sử bài làm</h3>
+        <div class="phone">
+          <div class="phone-notch"><span></span></div>
+          <div class="screen">
+            <div class="bar">Lịch sử bài làm</div>
+            <div class="pad">
+              <div class="list-item"><span><strong>100</strong> · Đề #1</span><span>2026-04-01</span></div>
+              <div class="list-item"><span><strong>75</strong> · Đề #2</span><span>2026-03-28</span></div>
+              <div class="list-item" style="border:0;"><span><strong>90</strong> · Đề #3</span><span>2026-03-20</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Xếp hạng -->
+      <div class="mockup-wrap" id="mock-xep-hang">
+        <h3>Bảng xếp hạng lớp</h3>
+        <div class="phone">
+          <div class="phone-notch"><span></span></div>
+          <div class="screen">
+            <div class="bar">Bảng xếp hạng lớp</div>
+            <div class="pad">
+              <div class="rank-gold list-item" style="border:0;"><span>1 · Nguyễn Văn A</span><strong>92</strong></div>
+              <div class="rank-gold list-item" style="border:0; background:linear-gradient(90deg,#e0e7ff,#ede7f6);"><span>2 · Trần Thị B</span><strong>88</strong></div>
+              <div class="rank-gold list-item" style="border:0; background:#fff;"><span>3 · Lê Minh C</span><strong>81</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Yêu thích -->
+      <div class="mockup-wrap" id="mock-yeu-thich">
+        <h3>Đề yêu thích</h3>
+        <div class="phone">
+          <div class="phone-notch"><span></span></div>
+          <div class="screen">
+            <div class="bar">Đề yêu thích</div>
+            <div class="pad">
+              <div class="card">
+                <strong>Reading Mock Test</strong>
+                <div style="color:#666;">Tiếng Anh · Lớp 12</div>
+              </div>
+              <div class="card">
+                <strong>Hàm số cơ bản</strong>
+                <div style="color:#666;">Toán · Lớp 10</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="live-server">
+    <h2>3. Cách xem bằng Live Server (VS Code / Cursor)</h2>
+    <div class="live-hint">
+      <ol style="margin: 0; padding-left: 1.2rem;">
+        <li>Mở thư mục dự án <code>D:\ANDORID</code> trong VS Code hoặc Cursor.</li>
+        <li>Cài extension <strong>Live Server</strong> (Ritwick Dey) nếu chưa có.</li>
+        <li>Chuột phải file <code>week1/index.html</code> → chọn <strong>Open with Live Server</strong>.</li>
+        <li>Trình duyệt sẽ mở địa chỉ dạng <code>http://127.0.0.1:5500/week1/index.html</code> (cổng có thể khác).</li>
+      </ol>
+      <p style="margin: 0.75rem 0 0; color: var(--muted); font-size: 0.9rem;">
+        Không bắt buộc Live Server: bạn cũng có thể mở trực tiếp file <code>index.html</code> bằng trình duyệt (double-click), nhưng một số trình duyệt hạn chế đường dẫn file — Live Server ổn định hơn cho bài nộp.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    QuizMaster 1–12 · Tuần 1 — Mô tả chức năng &amp; mockup UI (HTML)
+  </footer>
+</body>
+</html>

@@ -1,0 +1,180 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "student1",
+      "password": "123456",
+      "fullName": "Nguyen Van A",
+      "grade": 10
+    },
+    {
+      "id": 2,
+      "username": "student2",
+      "password": "123456",
+      "fullName": "Tran Thi B",
+      "grade": 12
+    }
+  ],
+  "grades": [
+    {
+      "id": 1,
+      "name": "Lop 1"
+    },
+    {
+      "id": 2,
+      "name": "Lop 2"
+    },
+    {
+      "id": 3,
+      "name": "Lop 3"
+    },
+    {
+      "id": 4,
+      "name": "Lop 4"
+    },
+    {
+      "id": 5,
+      "name": "Lop 5"
+    },
+    {
+      "id": 6,
+      "name": "Lop 6"
+    },
+    {
+      "id": 7,
+      "name": "Lop 7"
+    },
+    {
+      "id": 8,
+      "name": "Lop 8"
+    },
+    {
+      "id": 9,
+      "name": "Lop 9"
+    },
+    {
+      "id": 10,
+      "name": "Lop 10"
+    },
+    {
+      "id": 11,
+      "name": "Lop 11"
+    },
+    {
+      "id": 12,
+      "name": "Lop 12"
+    }
+  ],
+  "subjects": [
+    {
+      "id": 1,
+      "grade": 1,
+      "name": "Toan"
+    },
+    {
+      "id": 2,
+      "grade": 1,
+      "name": "Tieng Viet"
+    },
+    {
+      "id": 3,
+      "grade": 10,
+      "name": "Toan"
+    },
+    {
+      "id": 4,
+      "grade": 10,
+      "name": "Vat Ly"
+    },
+    {
+      "id": 5,
+      "grade": 11,
+      "name": "Hoa Hoc"
+    },
+    {
+      "id": 6,
+      "grade": 12,
+      "name": "Tieng Anh"
+    },
+    {
+      "id": 7,
+      "grade": 12,
+      "name": "Ngu Van"
+    }
+  ],
+  "quizzes": [
+    {
+      "id": 1,
+      "grade": 10,
+      "subject": "Toan",
+      "title": "De luyen tap ham so",
+      "durationMinutes": 15,
+      "questions": [
+        {
+          "id": 1,
+          "content": "Ham so y = x^2 co do thi la?",
+          "options": [
+            "Duong thang",
+            "Parabol",
+            "Hypebol",
+            "Elip"
+          ],
+          "correctAnswer": 1
+        },
+        {
+          "id": 2,
+          "content": "Gia tri cua 2^3 la?",
+          "options": [
+            "6",
+            "8",
+            "9",
+            "12"
+          ],
+          "correctAnswer": 1
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "grade": 12,
+      "subject": "Tieng Anh",
+      "title": "Mock Test Reading",
+      "durationMinutes": 20,
+      "questions": [
+        {
+          "id": 1,
+          "content": "Choose the synonym of 'rapid'.",
+          "options": [
+            "slow",
+            "quick",
+            "late",
+            "weak"
+          ],
+          "correctAnswer": 1
+        },
+        {
+          "id": 2,
+          "content": "She ___ to school every day.",
+          "options": [
+            "go",
+            "goes",
+            "gone",
+            "going"
+          ],
+          "correctAnswer": 1
+        }
+      ]
+    }
+  ],
+  "attempts": [
+    {
+      "id": 1,
+      "userId": 1,
+      "quizId": 1,
+      "correct": 2,
+      "total": 2,
+      "score": 100,
+      "submittedAt": "2026-03-29T18:24:36.138Z"
+    }
+  ]
+}
