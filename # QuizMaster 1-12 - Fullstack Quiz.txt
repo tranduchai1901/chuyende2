@@ -28,7 +28,7 @@ Thu muc tai lieu bo sung:
 
 ### Luong quan tri
 
-- Dashboard tong quan he thong.
+- Dashboard tong quan he thong..
 - Quan ly hoc sinh (them/sua/xoa, import CSV, export, reset mat khau).
 - Quan ly de thi (them/sua/xoa, sinh de tu dong).
 - Quan ly luot thi (xem, xoa theo ban ghi/lam sach du lieu).

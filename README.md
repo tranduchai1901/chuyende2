@@ -66,6 +66,7 @@ Dự án gồm hai phần:
 - Thiết kế Material 3, màu sắc và gradient hiện đại.
 - Hiệu ứng chuyển cảnh / animation nhẹ khi đăng nhập và danh sách đề.
 - Hỗ trợ nhiều nền tảng build Flutter (Android emulator dùng `10.0.2.2`, máy tính/web dùng `localhost`).
+.
 
 ---
 
