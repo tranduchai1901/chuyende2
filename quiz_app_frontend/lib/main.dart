@@ -15,16 +15,19 @@ void main() {
 class ApiSession {
   static int? userId;
   static String? role;
+  static String? token;
 
-  static void setFromLogin(Map<String, dynamic> user) {
+  static void setFromLogin(Map<String, dynamic> user, {String? accessToken}) {
     final id = user['id'];
     userId = id is int ? id : int.tryParse('$id');
     role = user['role'] as String? ?? 'user';
+    token = accessToken;
   }
 
   static void clear() {
     userId = null;
     role = null;
+    token = null;
   }
 
   static bool get isAdmin => role == 'admin';
@@ -72,6 +75,10 @@ class AppConfig {
 class ApiService {
   Map<String, String> _hdr([Map<String, String>? extra]) {
     final m = <String, String>{...?extra};
+    final token = ApiSession.token;
+    if (token != null && token.isNotEmpty) {
+      m['Authorization'] = 'Bearer $token';
+    }
     if (ApiSession.userId != null) {
       m['x-user-id'] = '${ApiSession.userId}';
     }
@@ -706,13 +713,50 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _loading = false;
   String? _error;
 
+  String _strengthLabel(String pwd) {
+    final p = pwd;
+    final length = p.length;
+    final hasLower = RegExp(r'[a-z]').hasMatch(p);
+    final hasUpper = RegExp(r'[A-Z]').hasMatch(p);
+    final hasDigit = RegExp(r'\d').hasMatch(p);
+    final hasSpecial = RegExp(r'[^A-Za-z0-9]').hasMatch(p);
+    final variety = [hasLower, hasUpper, hasDigit, hasSpecial].where((x) => x).length;
+    int score = 0;
+    if (length >= 8) score += 1;
+    if (length >= 12) score += 1;
+    if (variety >= 2) score += 1;
+    if (variety >= 3) score += 1;
+    if (score >= 4) return 'Mạnh';
+    if (score >= 2) return 'Trung bình';
+    return 'Yếu';
+  }
+
+  double _strengthValue(String pwd) {
+    final p = pwd;
+    final length = p.length;
+    final hasLower = RegExp(r'[a-z]').hasMatch(p);
+    final hasUpper = RegExp(r'[A-Z]').hasMatch(p);
+    final hasDigit = RegExp(r'\d').hasMatch(p);
+    final hasSpecial = RegExp(r'[^A-Za-z0-9]').hasMatch(p);
+    final variety = [hasLower, hasUpper, hasDigit, hasSpecial].where((x) => x).length;
+    int score = 0;
+    if (length >= 8) score += 1;
+    if (length >= 12) score += 1;
+    if (variety >= 2) score += 1;
+    if (variety >= 3) score += 1;
+    return (score / 4).clamp(0.0, 1.0);
+  }
+
   Future<void> _openRegisterDialog() async {
     final fullNameCtrl = TextEditingController();
     final usernameCtrl = TextEditingController();
     final passwordCtrl = TextEditingController();
+    final confirmPasswordCtrl = TextEditingController();
     int selectedGrade = 10;
     bool submitting = false;
     String? error;
+    String strengthLabel = 'Yếu';
+    double strengthValue = 0;
 
     await showDialog<void>(
       context: context,
@@ -738,6 +782,47 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: passwordCtrl,
                     obscureText: true,
                     decoration: const InputDecoration(labelText: 'Mật khẩu'),
+                    onChanged: (v) {
+                      setLocalState(() {
+                        strengthLabel = _strengthLabel(v);
+                        strengthValue = _strengthValue(v);
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Độ mạnh: $strengthLabel',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: strengthLabel == 'Mạnh'
+                            ? Colors.green
+                            : strengthLabel == 'Trung bình'
+                                ? Colors.orange
+                                : Colors.red,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  LinearProgressIndicator(
+                    value: strengthValue,
+                    minHeight: 8,
+                    borderRadius: BorderRadius.circular(999),
+                    backgroundColor: Colors.black12,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      strengthLabel == 'Mạnh'
+                          ? Colors.green
+                          : strengthLabel == 'Trung bình'
+                              ? Colors.orange
+                              : Colors.red,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: confirmPasswordCtrl,
+                    obscureText: true,
+                    decoration: const InputDecoration(labelText: 'Nhập lại mật khẩu'),
                   ),
                   const SizedBox(height: 10),
                   DropdownButtonFormField<int>(
@@ -771,9 +856,27 @@ class _LoginScreenState extends State<LoginScreen> {
                           error = null;
                         });
                         try {
+                          final u = usernameCtrl.text.trim();
+                          final p = passwordCtrl.text.trim();
+                          final cp = confirmPasswordCtrl.text.trim();
+                          if (u.isEmpty || fullNameCtrl.text.trim().isEmpty) {
+                            throw Exception('Vui lòng nhập đầy đủ họ tên và tên đăng nhập');
+                          }
+                          if (p.length < 8) {
+                            throw Exception('Mật khẩu tối thiểu 8 ký tự');
+                          }
+                          if (p.toLowerCase() == u.toLowerCase()) {
+                            throw Exception('Mật khẩu không được trùng với tên đăng nhập');
+                          }
+                          if (p != cp) {
+                            throw Exception('Mật khẩu nhập lại không khớp');
+                          }
+                          if (_strengthLabel(p) == 'Yếu') {
+                            throw Exception('Mật khẩu quá yếu. Hãy kết hợp chữ và số (hoặc ký tự đặc biệt)');
+                          }
                           await _api.register(
-                            username: usernameCtrl.text.trim(),
-                            password: passwordCtrl.text.trim(),
+                            username: u,
+                            password: p,
                             fullName: fullNameCtrl.text.trim(),
                             grade: selectedGrade,
                           );
@@ -806,7 +909,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final data = await _api.login(_username.text.trim(), _password.text.trim());
       if (!mounted) return;
       final user = data['user'] as Map<String, dynamic>;
-      ApiSession.setFromLogin(user);
+      ApiSession.setFromLogin(user, accessToken: data['token']?.toString());
       final isManager = ApiSession.isManager;
       final next = isManager
           ? AdminShell(api: _api, user: user)
@@ -1086,7 +1189,7 @@ class _AdminOverviewTabState extends State<_AdminOverviewTab> {
             attemptsByDay[key] = (attemptsByDay[key] ?? 0) + 1;
           }
         }
-        final top3 = rankings.take(3).toList();
+        final showRankings = rankings.take(10).toList();
         return ListView(
           padding: const EdgeInsets.all(20),
           children: [
@@ -1121,11 +1224,21 @@ class _AdminOverviewTabState extends State<_AdminOverviewTab> {
               _MiniBarChart(values: attemptsByDay.values.toList()),
               const SizedBox(height: 16),
             ],
-            const Text('Top học sinh', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+            const Text('Bảng xếp hạng', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
             const SizedBox(height: 8),
-            ...top3.map((r) => Card(
+            if (showRankings.isEmpty)
+              const Center(child: Text('Chưa có dữ liệu xếp hạng'))
+            else
+              ...showRankings.asMap().entries.map((entry) {
+                final i = entry.key;
+                final r = entry.value as Map<String, dynamic>;
+                final top = i < 3;
+                return Card(
                   child: ListTile(
-                    leading: CircleAvatar(child: Text('${top3.indexOf(r) + 1}')),
+                    leading: CircleAvatar(
+                      backgroundColor: top ? Colors.orange : Colors.indigo,
+                      child: Text('${i + 1}', style: const TextStyle(color: Colors.white)),
+                    ),
                     title: Text('${r['fullName'] ?? ''}'),
                     subtitle: Text('Lớp ${r['grade']} • ${r['attempts']} lượt'),
                     trailing: Text(
@@ -1133,7 +1246,8 @@ class _AdminOverviewTabState extends State<_AdminOverviewTab> {
                       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
-                )),
+                );
+              }),
           ],
         );
       },
@@ -2673,13 +2787,14 @@ class _RankingScreenState extends State<RankingScreen> {
   @override
   void initState() {
     super.initState();
-    _rankings = widget.api.getRankings(grade: widget.user['grade'] as int);
+    // Global leaderboard: all users see the same rankings
+    _rankings = widget.api.getRankings();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Bảng xếp hạng lớp')),
+      appBar: AppBar(title: const Text('Bảng xếp hạng')),
       floatingActionButton: buildAiChatbotFab(context, widget.api),
       body: FutureBuilder<List<dynamic>>(
         future: _rankings,
@@ -2697,24 +2812,26 @@ class _RankingScreenState extends State<RankingScreen> {
             itemBuilder: (_, i) {
               final row = data[i];
               final top = i < 3;
-              return Container(
+              final medal = i == 0
+                  ? '🥇'
+                  : i == 1
+                      ? '🥈'
+                      : i == 2
+                          ? '🥉'
+                          : null;
+              return Card(
                 margin: const EdgeInsets.only(bottom: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  gradient: top
-                      ? const LinearGradient(
-                          colors: [Color(0xFFFFE082), Color(0xFFFFCC80)],
-                        )
-                      : const LinearGradient(
-                          colors: [Color(0xFFE3F2FD), Color(0xFFEDE7F6)],
-                        ),
-                ),
                 child: ListTile(
                   leading: CircleAvatar(
                     backgroundColor: top ? Colors.orange : Colors.indigo,
                     child: Text('${i + 1}', style: const TextStyle(color: Colors.white)),
                   ),
-                  title: Text(row['fullName']),
+                  title: Row(
+                    children: [
+                      Expanded(child: Text('${row['fullName']}')),
+                      if (medal != null) Text(medal, style: const TextStyle(fontSize: 16)),
+                    ],
+                  ),
                   subtitle: Text('Số lần thi: ${row['attempts']}'),
                   trailing: Text(
                     '${row['averageScore']}',

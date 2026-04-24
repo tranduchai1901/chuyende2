@@ -8,6 +8,8 @@ import { open } from "sqlite";
 import multer from "multer";
 import mammoth from "mammoth";
 import { PDFParse } from "pdf-parse";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,6 +20,86 @@ const imageUploadsDir = path.join(uploadsDir, "images");
 const docsUploadsDir = path.join(uploadsDir, "documents");
 const aiResponseCache = new Map();
 let lastGeminiRequestAt = 0;
+const JWT_SECRET = process.env.JWT_SECRET || "dev-jwt-secret-change-me";
+const JWT_ISSUER = process.env.JWT_ISSUER || "quiz-app";
+const JWT_AUDIENCE = process.env.JWT_AUDIENCE || "quiz-app-client";
+
+function normalizeUsername(username) {
+  return String(username ?? "").trim();
+}
+
+function passwordStrength(password) {
+  const p = String(password ?? "");
+  const length = p.length;
+  const hasLower = /[a-z]/.test(p);
+  const hasUpper = /[A-Z]/.test(p);
+  const hasDigit = /\d/.test(p);
+  const hasSpecial = /[^A-Za-z0-9]/.test(p);
+  const variety = [hasLower, hasUpper, hasDigit, hasSpecial].filter(Boolean).length;
+
+  // very small heuristic for UI/validation
+  let score = 0;
+  if (length >= 8) score += 1;
+  if (length >= 12) score += 1;
+  if (variety >= 2) score += 1;
+  if (variety >= 3) score += 1;
+
+  let label = "Yếu";
+  if (score >= 4) label = "Mạnh";
+  else if (score >= 2) label = "Trung bình";
+
+  return { score, label, variety, length };
+}
+
+function toSafePublicUser(row) {
+  if (!row) return null;
+  return {
+    id: row.id,
+    username: row.username,
+    fullName: row.fullName,
+    grade: row.grade,
+    role: row.role,
+    studentCode: row.studentCode ?? null
+  };
+}
+
+function signAccessToken(user) {
+  return jwt.sign(
+    {
+      sub: String(user.id),
+      role: String(user.role ?? "user"),
+      username: String(user.username ?? "")
+    },
+    JWT_SECRET,
+    {
+      expiresIn: "7d",
+      issuer: JWT_ISSUER,
+      audience: JWT_AUDIENCE
+    }
+  );
+}
+
+function readBearerToken(req) {
+  const header = String(req.headers["authorization"] ?? "").trim();
+  if (!header) return null;
+  const m = header.match(/^Bearer\s+(.+)$/i);
+  return m ? m[1].trim() : null;
+}
+
+async function verifyPassword({ password, passwordHash, legacyPassword }) {
+  const pwd = String(password ?? "");
+  if (!pwd) return false;
+  const hash = String(passwordHash ?? "").trim();
+  if (hash) {
+    try {
+      return await bcrypt.compare(pwd, hash);
+    } catch (_) {
+      return false;
+    }
+  }
+  // fallback (legacy data) — keeps old users working until migrated
+  return String(legacyPassword ?? "") === pwd;
+}
 
 async function initDb() {
   if (!fs.existsSync(dataDir)) {
@@ -42,10 +124,14 @@ async function initDb() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT UNIQUE NOT NULL,
       password TEXT NOT NULL,
+      passwordHash TEXT,
       fullName TEXT NOT NULL,
       studentCode TEXT,
       grade INTEGER NOT NULL,
-      role TEXT NOT NULL DEFAULT 'user'
+      role TEXT NOT NULL DEFAULT 'user',
+      createdAt TEXT,
+      updatedAt TEXT,
+      lastLoginAt TEXT
     );
 
     CREATE TABLE IF NOT EXISTS grades (
@@ -131,6 +217,26 @@ async function initDb() {
     /* column exists */
   }
   try {
+    await db.exec(`ALTER TABLE users ADD COLUMN passwordHash TEXT`);
+  } catch (_) {
+    /* column exists */
+  }
+  try {
+    await db.exec(`ALTER TABLE users ADD COLUMN createdAt TEXT`);
+  } catch (_) {
+    /* column exists */
+  }
+  try {
+    await db.exec(`ALTER TABLE users ADD COLUMN updatedAt TEXT`);
+  } catch (_) {
+    /* column exists */
+  }
+  try {
+    await db.exec(`ALTER TABLE users ADD COLUMN lastLoginAt TEXT`);
+  } catch (_) {
+    /* column exists */
+  }
+  try {
     await db.exec(`ALTER TABLE questions ADD COLUMN imageUrl TEXT`);
   } catch (_) {
     /* column exists */
@@ -145,6 +251,7 @@ async function initDb() {
   if (row.count === 0) {
     await seedDb(db);
   }
+  await migratePasswordHashes(db);
   await migrateLegacyVietnamese(db);
   await ensureAdminAccount(db);
   await ensureRichQuizData(db);
@@ -157,6 +264,30 @@ async function initDb() {
   );
 
   return db;
+}
+
+async function migratePasswordHashes(db) {
+  // Backfill passwordHash for existing rows (dev/demo DBs may have plaintext password).
+  const users = await db.all("SELECT id, password, passwordHash, createdAt, updatedAt FROM users");
+  const now = new Date().toISOString();
+  for (const u of users) {
+    const needsHash = !String(u.passwordHash ?? "").trim() && String(u.password ?? "").trim();
+    const createdAt = String(u.createdAt ?? "").trim() || now;
+    const updatedAt = String(u.updatedAt ?? "").trim() || now;
+    if (!needsHash) {
+      if (!u.createdAt || !u.updatedAt) {
+        await db.run("UPDATE users SET createdAt = ?, updatedAt = ? WHERE id = ?", [createdAt, updatedAt, u.id]);
+      }
+      continue;
+    }
+    const hash = await bcrypt.hash(String(u.password), 10);
+    await db.run("UPDATE users SET passwordHash = ?, createdAt = ?, updatedAt = ? WHERE id = ?", [
+      hash,
+      createdAt,
+      updatedAt,
+      u.id
+    ]);
+  }
 }
 
 /** Chuẩn hóa dữ liệu cũ (không dấu) sang tiếng Việt có dấu — chạy mỗi lần khởi động, an toàn nếu đã cập nhật. */
@@ -278,12 +409,43 @@ async function migrateLegacyVietnamese(db) {
 }
 
 async function seedDb(db) {
+  const now = new Date().toISOString();
+  const adminHash = await bcrypt.hash("admin123", 10);
+  const teacherHash = await bcrypt.hash("123456", 10);
+  const s1Hash = await bcrypt.hash("123456", 10);
+  const s2Hash = await bcrypt.hash("123456", 10);
+  const s3Hash = await bcrypt.hash("123456", 10);
   await db.run(`INSERT INTO users (username,password,fullName,grade,role) VALUES
-    ('admin','admin123','Quản trị viên',12,'admin'),
-    ('teacher1','123456','Giáo viên Demo',10,'teacher'),
-    ('student1','123456','Nguyễn Văn A',10,'user'),
-    ('student2','123456','Trần Thị B',12,'user'),
-    ('student3','123456','Lê Minh C',9,'user')`);
+    ('admin','', 'Quản trị viên',12,'admin'),
+    ('teacher1','', 'Giáo viên Demo',10,'teacher'),
+    ('student1','', 'Nguyễn Văn A',10,'user'),
+    ('student2','', 'Trần Thị B',12,'user'),
+    ('student3','', 'Lê Minh C',9,'user')`);
+  await db.run("UPDATE users SET passwordHash = ?, createdAt = ?, updatedAt = ? WHERE username = 'admin'", [
+    adminHash,
+    now,
+    now
+  ]);
+  await db.run("UPDATE users SET passwordHash = ?, createdAt = ?, updatedAt = ? WHERE username = 'teacher1'", [
+    teacherHash,
+    now,
+    now
+  ]);
+  await db.run("UPDATE users SET passwordHash = ?, createdAt = ?, updatedAt = ? WHERE username = 'student1'", [
+    s1Hash,
+    now,
+    now
+  ]);
+  await db.run("UPDATE users SET passwordHash = ?, createdAt = ?, updatedAt = ? WHERE username = 'student2'", [
+    s2Hash,
+    now,
+    now
+  ]);
+  await db.run("UPDATE users SET passwordHash = ?, createdAt = ?, updatedAt = ? WHERE username = 'student3'", [
+    s3Hash,
+    now,
+    now
+  ]);
 
   for (let i = 1; i <= 12; i++) {
     await db.run("INSERT INTO grades (id,name) VALUES (?,?)", [i, `Lớp ${i}`]);
@@ -343,16 +505,21 @@ async function seedDb(db) {
 async function ensureAdminAccount(db) {
   const admin = await db.get("SELECT id FROM users WHERE LOWER(username) = 'admin' LIMIT 1");
   if (!admin) {
+    const now = new Date().toISOString();
+    const hash = await bcrypt.hash("admin123", 10);
     await db.run(
-      "INSERT INTO users (username, password, fullName, grade, role) VALUES (?, ?, ?, ?, ?)",
-      ["admin", "admin123", "Quản trị viên", 12, "admin"]
+      "INSERT INTO users (username, password, passwordHash, fullName, grade, role, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      ["admin", "", hash, "Quản trị viên", 12, "admin", now, now]
     );
     return;
   }
 
+  const now = new Date().toISOString();
+  const current = await db.get("SELECT passwordHash FROM users WHERE id = ?", [admin.id]);
+  const nextHash = String(current?.passwordHash ?? "").trim() ? current.passwordHash : await bcrypt.hash("admin123", 10);
   await db.run(
-    "UPDATE users SET role = 'admin', password = ?, fullName = COALESCE(NULLIF(fullName, ''), ?) WHERE id = ?",
-    ["admin123", "Quản trị viên", admin.id]
+    "UPDATE users SET role = 'admin', password = '', passwordHash = ?, fullName = COALESCE(NULLIF(fullName, ''), ?), updatedAt = ? WHERE id = ?",
+    [nextHash, "Quản trị viên", now, admin.id]
   );
 }
 
@@ -1090,18 +1257,38 @@ export async function createApp() {
   });
 
   app.use(async (req, res, next) => {
+    const token = readBearerToken(req);
+    if (token) {
+      try {
+        const payload = jwt.verify(token, JWT_SECRET, { issuer: JWT_ISSUER, audience: JWT_AUDIENCE });
+        const userId = Number(payload?.sub);
+        if (!Number.isNaN(userId)) {
+          const user = await db.get(
+            "SELECT id, username, fullName, grade, role, studentCode FROM users WHERE id = ?",
+            [userId]
+          );
+          req.authUser = user ?? null;
+          return next();
+        }
+      } catch (_) {
+        // ignore invalid token, fall back to legacy header
+      }
+    }
+
     const uid = req.headers["x-user-id"];
-    if (!uid) {
-      req.authUser = null;
-      return next();
+    if (uid) {
+      const id = Number(uid);
+      if (!Number.isNaN(id)) {
+        const user = await db.get(
+          "SELECT id, username, fullName, grade, role, studentCode FROM users WHERE id = ?",
+          [id]
+        );
+        req.authUser = user ?? null;
+        return next();
+      }
     }
-    const id = Number(uid);
-    if (Number.isNaN(id)) {
-      req.authUser = null;
-      return next();
-    }
-    const user = await db.get("SELECT id, username, fullName, grade, role FROM users WHERE id = ?", [id]);
-    req.authUser = user ?? null;
+
+    req.authUser = null;
     next();
   });
 
@@ -1125,12 +1312,25 @@ export async function createApp() {
 
   app.post("/api/auth/login", async (req, res) => {
     const { username, password } = req.body ?? {};
-    const user = await db.get(
-      "SELECT id, username, fullName, grade, role, studentCode FROM users WHERE username = ? AND password = ?",
-      [username, password]
+    const uname = normalizeUsername(username);
+    if (!uname || !password) return res.status(400).json({ message: "Thiếu username hoặc password." });
+    const userRow = await db.get(
+      "SELECT id, username, fullName, grade, role, studentCode, passwordHash, password FROM users WHERE LOWER(username) = LOWER(?) LIMIT 1",
+      [uname]
     );
-    if (!user) return res.status(401).json({ message: "Thông tin đăng nhập không đúng." });
-    res.json({ token: `fake-token-${user.id}`, user });
+    const ok = await verifyPassword({
+      password,
+      passwordHash: userRow?.passwordHash,
+      legacyPassword: userRow?.password
+    });
+    if (!userRow || !ok) return res.status(401).json({ message: "Thông tin đăng nhập không đúng." });
+    const token = signAccessToken(userRow);
+    await db.run("UPDATE users SET lastLoginAt = ?, updatedAt = ? WHERE id = ?", [
+      new Date().toISOString(),
+      new Date().toISOString(),
+      userRow.id
+    ]);
+    res.json({ token, user: toSafePublicUser(userRow) });
   });
 
   app.post("/api/auth/register", async (req, res) => {
@@ -1139,7 +1339,12 @@ export async function createApp() {
       return res.status(400).json({ message: "Thiếu thông tin đăng ký." });
     }
 
-    const normalizedUsername = String(username).trim();
+    const normalizedUsername = normalizeUsername(username);
+    const normalizedUsernameLower = normalizedUsername.toLowerCase();
+    const pwd = String(password);
+    if (pwd.toLowerCase() === normalizedUsernameLower) {
+      return res.status(400).json({ message: "Mật khẩu không được trùng với tên đăng nhập." });
+    }
     const existed = await db.get("SELECT id FROM users WHERE LOWER(username) = LOWER(?)", [
       normalizedUsername
     ]);
@@ -1147,19 +1352,31 @@ export async function createApp() {
       return res.status(409).json({ message: "Tên đăng nhập đã tồn tại." });
     }
 
+    if (pwd.length < 8) {
+      return res.status(400).json({ message: "Mật khẩu tối thiểu 8 ký tự." });
+    }
+    const strength = passwordStrength(pwd);
+    if (strength.variety < 2) {
+      return res.status(400).json({ message: "Mật khẩu quá yếu. Hãy kết hợp chữ và số (hoặc ký tự đặc biệt)." });
+    }
+
     const gradeNumber = Number(grade);
     if (Number.isNaN(gradeNumber) || gradeNumber < 1 || gradeNumber > 12) {
       return res.status(400).json({ message: "Lớp không hợp lệ." });
     }
 
+    const now = new Date().toISOString();
+    const passwordHash = await bcrypt.hash(pwd, 10);
     const result = await db.run(
-      "INSERT INTO users (username, password, fullName, grade, role, studentCode) VALUES (?, ?, ?, ?, 'user', ?)",
+      "INSERT INTO users (username, password, passwordHash, fullName, grade, role, studentCode, createdAt, updatedAt) VALUES (?, '', ?, ?, ?, 'user', ?, ?, ?)",
       [
         normalizedUsername,
-        String(password),
+        passwordHash,
         String(fullName).trim(),
         gradeNumber,
-        String(studentCode ?? "").trim() || null
+        String(studentCode ?? "").trim() || null,
+        now,
+        now
       ]
     );
     await db.run("UPDATE users SET studentCode = COALESCE(studentCode, 'HS' || printf('%05d', id)) WHERE id = ?", [
@@ -1168,10 +1385,8 @@ export async function createApp() {
     const created = await db.get("SELECT id, username, fullName, grade, role, studentCode FROM users WHERE id = ?", [
       result.lastID
     ]);
-    return res.status(201).json({
-      message: "Đăng ký thành công.",
-      user: created
-    });
+    const token = signAccessToken(created);
+    return res.status(201).json({ message: "Đăng ký thành công.", token, user: toSafePublicUser(created) });
   });
 
   app.get("/api/grades", async (_, res) => {
@@ -1395,7 +1610,9 @@ export async function createApp() {
 
   app.get("/api/rankings", async (req, res) => {
     const grade = Number(req.query.grade);
-    const where = Number.isNaN(grade) ? "" : "WHERE u.grade = ?";
+    // Only rank real students/users; exclude admin/teacher accounts.
+    const baseWhere = "WHERE u.role = 'user'";
+    const where = Number.isNaN(grade) ? baseWhere : `${baseWhere} AND u.grade = ?`;
     const params = Number.isNaN(grade) ? [] : [grade];
     const rows = await db.all(
       `SELECT
